@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>NewsIQ Alerts & Notifications</title>
+
+    <style>
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            background: #07090f;
+            color: #b8cce0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, "Noto Sans Tamil", sans-serif;
+            font-size: 14px;
+        }
+
+        a { color: inherit; text-decoration: none; }
+
+        .topbar {
+            background: #0b0f1c;
+            border-bottom: 1px solid #1a2638;
+            padding: 14px 22px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .brand-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .brand-left {
+            display: flex;
+            align-items: baseline;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .brand-tamil {
+            color: #e8a820;
+            font-size: 28px;
+            font-weight: 900;
+            line-height: 1;
+        }
+
+        .brand-main {
+            color: #e2edf8;
+            font-size: 22px;
+            font-weight: 900;
+        }
+
+        .brand-subtitle {
+            color: #6f849b;
+            font-size: 12px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .mini-stat {
+            background: #0f1624;
+            border: 1px solid #1a2638;
+            border-radius: 999px;
+            padding: 6px 10px;
+            color: #8fa8c2;
+            font-size: 12px;
+        }
+
+        .mini-stat strong { color: #e8a820; }
+
+        .nav-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 14px;
+            flex-wrap: wrap;
+        }
+
+        .nav-link {
+            background: #111b2b;
+            border: 1px solid #26364f;
+            color: #b8cce0;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            display: inline-block;
+        }
+
+        .nav-link.active,
+        .nav-link:hover {
+            border-color: #e8a820;
+            color: #e8a820;
+        }
+
+        .container {
+            max-width: 1450px;
+            margin: 0 auto;
+            padding: 22px;
+        }
+
+        .section-title {
+            color: #e2edf8;
+            font-size: 26px;
+            font-weight: 900;
+            margin: 0 0 8px 0;
+        }
+
+        .subtitle {
+            color: #8fa8c2;
+            line-height: 1.6;
+            margin: 0 0 18px 0;
+        }
+
+        .layout {
+            display: grid;
+            grid-template-columns: 420px minmax(0, 1fr);
+            gap: 20px;
+            align-items: start;
+        }
+
+        .card {
+            background: #0f1624;
+            border: 1px solid #1a2638;
+            border-radius: 14px;
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.18);
+        }
+
+        .card-label {
+            color: #6f849b;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.11em;
+            font-weight: 900;
+            margin-bottom: 12px;
+        }
+
+        .form-grid {
+            display: grid;
+            gap: 10px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        label {
+            color: #8fa8c2;
+            display: grid;
+            gap: 6px;
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+        input,
+        select {
+            background: #0b0f1c;
+            color: #d9e6f2;
+            border: 1px solid #1a2638;
+            border-radius: 8px;
+            padding: 10px 12px;
+            font-size: 14px;
+            outline: none;
+            width: 100%;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: #e8a820;
+        }
+
+        .button {
+            background: #e8a820;
+            color: #07090f;
+            border: none;
+            border-radius: 8px;
+            padding: 11px 13px;
+            font-weight: 900;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .rule-card,
+        .event-card {
+            background: #0b0f1c;
+            border: 1px solid #1a2638;
+            border-radius: 12px;
+            padding: 13px;
+            margin-bottom: 12px;
+        }
+
+        .rule-title,
+        .event-title {
+            color: #e2edf8;
+            font-size: 17px;
+            font-weight: 900;
+            line-height: 1.4;
+            margin-bottom: 8px;
+        }
+
+        .meta-row {
+            display: flex;
+            gap: 7px;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 10px;
+        }
+
+        .pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 8px;
+            border-radius: 999px;
+            font-size: 11px;
+            line-height: 1;
+            background: #162236;
+            border: 1px solid #26364f;
+            color: #9eb7d0;
+            white-space: nowrap;
+        }
+
+        .pill-hot {
+            color: #e8a820;
+            background: rgba(232, 168, 32, 0.09);
+            border-color: rgba(232, 168, 32, 0.35);
+        }
+
+        .pill-new {
+            color: #22c46a;
+            background: rgba(34, 196, 106, 0.09);
+            border-color: rgba(34, 196, 106, 0.3);
+        }
+
+        .snippet {
+            color: #c4d4e4;
+            line-height: 1.65;
+            margin: 8px 0 12px;
+        }
+
+        .muted {
+            color: #6f849b;
+            line-height: 1.6;
+        }
+
+        .api-box {
+            background: #07090f;
+            border: 1px solid #1a2638;
+            border-radius: 10px;
+            padding: 10px;
+            color: #e8a820;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            font-size: 12px;
+            overflow-wrap: anywhere;
+        }
+
+        @media (max-width: 1000px) {
+            .layout,
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<div class="page">
+    <header class="topbar">
+        <div class="brand-row">
+            <div class="brand-left">
+                <div class="brand-tamil">தமிழ்</div>
+                <div class="brand-main">NewsIQ</div>
+                <div class="brand-subtitle">Alerts & Notifications</div>
+            </div>
+
+            <div class="mini-stat">
+                <strong>{{ unread_count }}</strong> new alerts
+            </div>
+        </div>
+
+        <nav class="nav-row">
+            <a class="nav-link" href="/">Feed</a>
+            <a class="nav-link" href="/jobs/">Jobs</a>
+            <a class="nav-link" href="/reports/">Reports</a>
+            <a class="nav-link active" href="/alerts/">Alerts</a>
+            <a class="nav-link" href="/admin/" target="_blank">Admin</a>
+        </nav>
+    </header>
+
+    <main class="container">
+        <h1 class="section-title">Alerts & Notifications</h1>
+        <p class="subtitle">
+            Track people, parties, districts, jobs, topics, or custom keywords. Run
+            <code>python manage.py run_alerts</code> after the pipeline to create notifications.
+        </p>
+
+        <div class="layout">
+            <aside>
+                <section class="card">
+                    <div class="card-label">Create Alert Rule</div>
+
+                    <form method="post" class="form-grid">
+                        {% csrf_token %}
+
+                        <label>
+                            Rule name
+                            <input name="name" placeholder="TVK election watch" required>
+                        </label>
+
+                        <label>
+                            Keywords
+                            <input name="keywords" placeholder="TVK, Vijay, election" required>
+                        </label>
+
+                        <div class="form-row">
+                            <label>
+                                Match
+                                <select name="match_mode">
+                                    {% for value, label in match_mode_choices %}
+                                        <option value="{{ value }}">{{ label }}</option>
+                                    {% endfor %}
+                                </select>
+                            </label>
+
+                            <label>
+                                Channel
+                                <select name="notification_channel">
+                                    {% for value, label in notification_channel_choices %}
+                                        <option value="{{ value }}">{{ label }}</option>
+                                    {% endfor %}
+                                </select>
+                            </label>
+                        </div>
+
+                        <div class="form-row">
+                            <label>
+                                Source type
+                                <select name="source_type">
+                                    <option value="">Any</option>
+                                    {% for value, label in source_type_choices %}
+                                        <option value="{{ value }}">{{ label }}</option>
+                                    {% endfor %}
+                                </select>
+                            </label>
+
+                            <label>
+                                Primary topic
+                                <select name="primary_topic">
+                                    <option value="">Any</option>
+                                    {% for value, label in news_topic_choices %}
+                                        <option value="{{ value }}">{{ label }}</option>
+                                    {% endfor %}
+                                </select>
+                            </label>
+                        </div>
+
+                        <div class="form-row">
+                            <label>
+                                Minimum relevance
+                                <input name="minimum_relevance" type="number" min="0" max="1" step="0.05" value="0">
+                            </label>
+
+                            <label>
+                                Email
+                                <input name="email" type="email" placeholder="optional@email.com">
+                            </label>
+                        </div>
+
+                        <button class="button" type="submit">Create Alert</button>
+                    </form>
+                </section>
+
+                <section class="card">
+                    <div class="card-label">Active Rules</div>
+
+                    {% for rule in rules %}
+                        <div class="rule-card">
+                            <div class="rule-title">{{ rule.name }}</div>
+                            <div class="meta-row">
+                                <span class="pill pill-hot">{{ rule.keywords }}</span>
+                                <span class="pill">{{ rule.get_match_mode_display }}</span>
+                                <span class="pill">{{ rule.get_notification_channel_display }}</span>
+                            </div>
+                            <div class="muted">
+                                {{ rule.events.count }} matches
+                                {% if rule.last_checked_at %}
+                                    · checked {{ rule.last_checked_at|timesince }} ago
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% empty %}
+                        <div class="muted">No alert rules yet.</div>
+                    {% endfor %}
+                </section>
+
+                <section class="card">
+                    <div class="card-label">API</div>
+                    <div class="api-box">/api/alerts/?limit=50</div>
+                </section>
+            </aside>
+
+            <section>
+                <div class="card">
+                    <div class="card-label">Recent Notifications</div>
+
+                    {% for event in events %}
+                        <a class="event-card" href="{{ event.content_item.url }}" target="_blank">
+                            <div class="meta-row">
+                                <span class="pill pill-new">{{ event.get_status_display }}</span>
+                                <span class="pill">{{ event.rule.name }}</span>
+                                <span class="pill">{{ event.content_item.source.name }}</span>
+                                <span class="pill">{{ event.matched_at|timesince }} ago</span>
+                            </div>
+
+                            <div class="event-title">
+                                {% if event.content_item.title_en %}
+                                    {{ event.content_item.title_en }}
+                                {% else %}
+                                    {{ event.content_item.title_ta }}
+                                {% endif %}
+                            </div>
+
+                            <div class="snippet">{{ event.snippet }}</div>
+
+                            <div class="meta-row">
+                                {% for keyword in event.matched_keywords %}
+                                    <span class="pill pill-hot">{{ keyword }}</span>
+                                {% endfor %}
+                            </div>
+                        </a>
+                    {% empty %}
+                        <div class="muted">
+                            No notifications yet. Create a rule, then run
+                            <code>python manage.py run_alerts</code>.
+                        </div>
+                    {% endfor %}
+                </div>
+            </section>
+        </div>
+    </main>
+</div>
+</body>
+</html>

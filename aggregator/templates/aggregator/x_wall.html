@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>NewsIQ - X / Twitter Commentary</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: #07090f;
+            color: #b8cce0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, "Noto Sans Tamil", sans-serif;
+            font-size: 14px;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        code {
+            background: #0b0f1c;
+            border: 1px solid #26364f;
+            border-radius: 6px;
+            padding: 2px 6px;
+            color: #e8a820;
+        }
+
+        .topbar {
+            background: #0b0f1c;
+            border-bottom: 1px solid #1a2638;
+            padding: 14px 22px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .brand-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .brand-left {
+            display: flex;
+            align-items: baseline;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .brand-tamil {
+            color: #e8a820;
+            font-size: 28px;
+            font-weight: 900;
+            line-height: 1;
+        }
+
+        .brand-main {
+            color: #e2edf8;
+            font-size: 22px;
+            font-weight: 900;
+        }
+
+        .brand-subtitle {
+            color: #6f849b;
+            font-size: 12px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .language-switch {
+            display: flex;
+            background: #0f1624;
+            border: 1px solid #1a2638;
+            border-radius: 999px;
+            padding: 4px;
+            gap: 4px;
+        }
+
+        .lang-btn {
+            border: none;
+            background: transparent;
+            color: #8fa8c2;
+            padding: 7px 13px;
+            border-radius: 999px;
+            font-size: 13px;
+            cursor: pointer;
+            font-weight: 800;
+        }
+
+        .lang-btn.active {
+            background: #e8a820;
+            color: #07090f;
+        }
+
+        .nav-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 14px;
+            flex-wrap: wrap;
+        }
+
+        .nav-link {
+            background: #111b2b;
+            border: 1px solid #26364f;
+            color: #b8cce0;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            display: inline-block;
+        }
+
+        .nav-link.active,
+        .nav-link:hover {
+            border-color: #e8a820;
+            color: #e8a820;
+        }
+
+        .container {
+            max-width: 1450px;
+            margin: 0 auto;
+            padding: 22px;
+        }
+
+        .section-title {
+            color: #e2edf8;
+            font-size: 28px;
+            font-weight: 900;
+            margin: 0 0 8px 0;
+        }
+
+        .subtitle {
+            color: #8fa8c2;
+            line-height: 1.65;
+            margin-bottom: 18px;
+            max-width: 960px;
+        }
+
+        .info-card {
+            background: #0f1624;
+            border: 1px solid #26364f;
+            border-radius: 14px;
+            padding: 14px 16px;
+            margin-bottom: 18px;
+            color: #9eb7d0;
+            line-height: 1.65;
+        }
+
+        .info-card strong {
+            color: #e2edf8;
+        }
+
+        .warning-card {
+            background: rgba(232, 168, 32, 0.08);
+            border: 1px solid rgba(232, 168, 32, 0.3);
+            border-radius: 14px;
+            padding: 14px 16px;
+            margin-bottom: 18px;
+            color: #d7c28a;
+            line-height: 1.65;
+        }
+
+        .section-heading {
+            color: #e2edf8;
+            font-size: 18px;
+            font-weight: 900;
+            margin: 26px 0 12px 0;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 18px;
+            align-items: start;
+        }
+
+        .x-card {
+            background: #0f1624;
+            border: 1px solid #1a2638;
+            border-radius: 14px;
+            padding: 14px;
+            min-height: 680px;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.18);
+        }
+
+        .x-card:hover {
+            border-color: #2a3a52;
+        }
+
+        .x-card-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .x-title {
+            color: #e2edf8;
+            font-size: 17px;
+            font-weight: 900;
+            line-height: 1.35;
+        }
+
+        .x-handle {
+            color: #e8a820;
+            font-size: 13px;
+            font-weight: 800;
+            margin-top: 4px;
+        }
+
+        .x-meta {
+            color: #6f849b;
+            font-size: 12px;
+            margin-top: 4px;
+            line-height: 1.45;
+        }
+
+        .button-row {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        .open-link {
+            color: #8fa8c2;
+            font-size: 12px;
+            border: 1px solid #26364f;
+            padding: 7px 10px;
+            border-radius: 999px;
+            white-space: nowrap;
+            display: inline-block;
+        }
+
+        .open-link:hover {
+            color: #e8a820;
+            border-color: #e8a820;
+        }
+
+        .timeline-wrapper {
+            background: #07090f;
+            border: 1px solid #1a2638;
+            border-radius: 12px;
+            overflow: hidden;
+            min-height: 560px;
+        }
+
+        .fallback-box {
+            background: #0b0f1c;
+            border: 1px dashed #26364f;
+            border-radius: 12px;
+            padding: 12px;
+            margin-top: 12px;
+            color: #8fa8c2;
+            font-size: 13px;
+            line-height: 1.55;
+        }
+
+        .query-card {
+            min-height: auto;
+        }
+
+        .query-text {
+            color: #9eb7d0;
+            background: #0b0f1c;
+            border: 1px solid #26364f;
+            border-radius: 10px;
+            padding: 10px;
+            line-height: 1.6;
+            overflow-wrap: anywhere;
+            margin-top: 10px;
+        }
+
+        .muted {
+            color: #6f849b;
+        }
+
+        .empty-card {
+            background: #0f1624;
+            border: 1px solid #1a2638;
+            border-radius: 14px;
+            padding: 18px;
+            color: #8fa8c2;
+            line-height: 1.65;
+        }
+
+        body.lang-ta .label-en {
+            display: none;
+        }
+
+        body.lang-en .label-ta {
+            display: none;
+        }
+
+        @media (max-width: 1050px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .x-card {
+                min-height: 620px;
+            }
+        }
+
+        @media (max-width: 700px) {
+            .container {
+                padding: 14px;
+            }
+
+            .topbar {
+                padding: 14px;
+            }
+
+            .section-title {
+                font-size: 24px;
+            }
+
+            .x-card {
+                min-height: 580px;
+            }
+
+            .timeline-wrapper {
+                min-height: 500px;
+            }
+        }
+    </style>
+</head>
+
+<body class="lang-en">
+
+<header class="topbar">
+    <div class="brand-row">
+        <div class="brand-left">
+            <div class="brand-tamil">தமிழ்</div>
+            <div class="brand-main">NewsIQ</div>
+            <div class="brand-subtitle">
+                <span class="label-en">Tamil Nadu X / Twitter Commentary Wall</span>
+                <span class="label-ta">தமிழ்நாடு X / ட்விட்டர் கருத்து சுவர்</span>
+            </div>
+        </div>
+
+        <div class="language-switch">
+            <button type="button" class="lang-btn" data-lang="en">English</button>
+            <button type="button" class="lang-btn" data-lang="ta">தமிழ்</button>
+        </div>
+    </div>
+
+    <nav class="nav-row">
+        <a class="nav-link" href="/">
+            <span class="label-en">📰 NewsIQ</span>
+            <span class="label-ta">📰 செய்திகள்</span>
+        </a>
+
+        <a class="nav-link" href="/jobs/">
+            <span class="label-en">💼 JobsIQ</span>
+            <span class="label-ta">💼 வேலைவாய்ப்பு</span>
+        </a>
+
+        <a class="nav-link" href="/reports/">
+            <span class="label-en">Reports</span>
+            <span class="label-ta">அறிக்கைகள்</span>
+        </a>
+
+        <a class="nav-link active" href="/x/">
+            <span class="label-en">X / Twitter</span>
+            <span class="label-ta">X / ட்விட்டர்</span>
+        </a>
+
+        <a class="nav-link" href="/alerts/">
+            <span class="label-en">Alerts</span>
+            <span class="label-ta">எச்சரிக்கைகள்</span>
+        </a>
+
+        <a class="nav-link" href="/admin/" target="_blank">
+            <span class="label-en">Admin</span>
+            <span class="label-ta">நிர்வாகம்</span>
+        </a>
+    </nav>
+</header>
+
+<div class="container">
+    <h1 class="section-title">
+        <span class="label-en">X / Twitter Commentary Wall</span>
+        <span class="label-ta">X / ட்விட்டர் கருத்து சுவர்</span>
+    </h1>
+
+    <div class="subtitle">
+        <span class="label-en">
+            Free display-only view of Tamil Nadu political commentary accounts.
+            This page does not use the paid X API and does not store tweets in the database.
+        </span>
+        <span class="label-ta">
+            தமிழ்நாடு அரசியல் கருத்து கணக்குகளை இலவசமாக காண்பிக்கும் பக்கம்.
+            இது paid X API பயன்படுத்தாது; tweets database-ல் சேமிக்கப்படாது.
+        </span>
+    </div>
+
+    <div class="warning-card">
+        <strong>
+            <span class="label-en">Important:</span>
+            <span class="label-ta">முக்கிய குறிப்பு:</span>
+        </strong>
+        <span class="label-en">
+            X controls whether embedded timelines render. If a timeline is blank, use the visible “Open on X” button.
+            Browser privacy settings, ad blockers, or X login restrictions can block embeds.
+        </span>
+        <span class="label-ta">
+            X தான் timeline காண்பிக்கப்படுமா என்பதை கட்டுப்படுத்துகிறது. Timeline blank ஆக இருந்தால் “Open on X” button-ஐ பயன்படுத்தவும்.
+            Browser privacy settings, ad blockers, அல்லது X login restrictions embeds-ஐ block செய்யலாம்.
+        </span>
+    </div>
+
+    <div class="info-card">
+        <strong>
+            <span class="label-en">How NewsIQ treats these sources:</span>
+            <span class="label-ta">NewsIQ இந்த sources-ஐ எப்படி பார்க்கிறது:</span>
+        </strong>
+        <span class="label-en">
+            These are commentary and public-reaction sources, not verified government sources. They help you see what Tamil political commentators are amplifying.
+        </span>
+        <span class="label-ta">
+            இவை commentary மற்றும் public-reaction sources. Verified government sources அல்ல. Tamil political commentators என்ன பேசுகிறார்கள் என்பதைப் பார்க்க உதவும்.
+        </span>
+    </div>
+
+    <h2 class="section-heading">
+        <span class="label-en">Profile Timelines</span>
+        <span class="label-ta">Profile Timelines</span>
+    </h2>
+
+    <div class="grid">
+        {% for source in profile_sources %}
+        <section class="x-card">
+            <div class="x-card-header">
+                <div>
+                    <div class="x-title">{{ source.name }}</div>
+
+                    {% if source.x_handle %}
+                    <div class="x-handle">@{{ source.x_handle }}</div>
+                    {% endif %}
+
+                    <div class="x-meta">
+                        <span class="label-en">Source type:</span>
+                        <span class="label-ta">Source வகை:</span>
+                        {{ source.get_source_type_display }}
+                    </div>
+                </div>
+
+                {% if source.x_handle %}
+                <a class="open-link" href="https://x.com/{{ source.x_handle }}" target="_blank" rel="noopener noreferrer">
+                    <span class="label-en">Open on X</span>
+                    <span class="label-ta">X-ல் திறக்கவும்</span>
+                </a>
+                {% endif %}
+            </div>
+
+            {% if source.x_handle %}
+            <div class="timeline-wrapper">
+                <a
+                    class="twitter-timeline"
+                    data-theme="dark"
+                    data-height="560"
+                    data-chrome="nofooter noborders transparent"
+                    data-dnt="true"
+                    href="https://twitter.com/{{ source.x_handle }}">
+                    Posts by @{{ source.x_handle }}
+                </a>
+            </div>
+
+            <div class="fallback-box">
+                <span class="label-en">
+                    If the embedded timeline does not load, open the account directly:
+                </span>
+                <span class="label-ta">
+                    Embedded timeline load ஆகவில்லை என்றால், account-ஐ நேரடியாக திறக்கவும்:
+                </span>
+                <a href="https://x.com/{{ source.x_handle }}" target="_blank" rel="noopener noreferrer" style="color:#e8a820;">
+                    @{{ source.x_handle }}
+                </a>
+            </div>
+            {% else %}
+            <div class="fallback-box">
+                <span class="label-en">No X handle found for this source.</span>
+                <span class="label-ta">இந்த source-க்கு X handle இல்லை.</span>
+            </div>
+            {% endif %}
+        </section>
+        {% empty %}
+        <div class="empty-card">
+            <strong>No profile-based X sources found.</strong>
+            <br>
+            Run:
+            <br>
+            <code>python manage.py seed_x_display_sources</code>
+            <br><br>
+            Then check:
+            <br>
+            <code>python manage.py shell -c "from aggregator.models import Source; [print(s.name, s.x_handle) for s in Source.objects.filter(source_type='x')]"</code>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% if query_sources %}
+    <h2 class="section-heading">
+        <span class="label-en">Search Query Sources</span>
+        <span class="label-ta">Search Query Sources</span>
+    </h2>
+
+    <div class="info-card">
+        <span class="label-en">
+            These X sources are search queries, not profile timelines. They cannot be embedded or analyzed for free without an API.
+            For now, NewsIQ shows them as reference links only.
+        </span>
+        <span class="label-ta">
+            இவை X search queries; profile timelines அல்ல. API இல்லாமல் இலவசமாக embed/analyze செய்ய முடியாது.
+            இப்போது NewsIQ இவற்றை reference links ஆக மட்டும் காட்டுகிறது.
+        </span>
+    </div>
+
+    <div class="grid">
+        {% for source in query_sources %}
+        <section class="x-card query-card">
+            <div class="x-card-header">
+                <div>
+                    <div class="x-title">{{ source.name }}</div>
+                    <div class="x-meta">
+                        <span class="label-en">Query source</span>
+                        <span class="label-ta">Query source</span>
+                    </div>
+                </div>
+
+                {% if source.url %}
+                <a class="open-link" href="{{ source.url }}" target="_blank" rel="noopener noreferrer">
+                    <span class="label-en">Open search</span>
+                    <span class="label-ta">Search திறக்கவும்</span>
+                </a>
+                {% endif %}
+            </div>
+
+            {% if source.x_query %}
+            <div class="query-text">{{ source.x_query }}</div>
+            {% else %}
+            <div class="query-text muted">No query saved.</div>
+            {% endif %}
+        </section>
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>
+
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+<script>
+    const langButtons = Array.from(document.querySelectorAll(".lang-btn"));
+
+    function setLanguage(lang) {
+        document.body.classList.remove("lang-en", "lang-ta");
+        document.body.classList.add(`lang-${lang}`);
+
+        localStorage.setItem("newsiq_x_language", lang);
+
+        langButtons.forEach(button => {
+            if (button.dataset.lang === lang) {
+                button.classList.add("active");
+            } else {
+                button.classList.remove("active");
+            }
+        });
+    }
+
+    langButtons.forEach(button => {
+        button.addEventListener("click", () => {
+            setLanguage(button.dataset.lang);
+        });
+    });
+
+    const savedLanguage = localStorage.getItem("newsiq_x_language") || "en";
+    setLanguage(savedLanguage);
+</script>
+
+</body>
+</html>

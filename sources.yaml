@@ -1,0 +1,127 @@
+news_sites:
+  - name: Daily Thanthi
+    type: news_site
+    crawl_method: rss
+    rss_url: "https://www.dailythanthi.com/topic/rss"
+    url: "https://www.dailythanthi.com/"
+
+  - name: BBC Tamil
+    type: news_site
+    crawl_method: rss
+    rss_url: "https://feeds.bbci.co.uk/tamil/rss.xml"
+    url: "https://www.bbc.com/tamil"
+
+  - name: Dinamalar
+    type: news_site
+    crawl_method: rss
+    rss_url: "https://www.dinamalar.com/rss/rss.asp"
+    url: "https://www.dinamalar.com/"
+
+  - name: OneIndia Tamil News
+    type: news_site
+    crawl_method: rss
+    rss_url: "https://tamil.oneindia.com/rss/feeds/tamil-news-fb.xml"
+    url: "https://tamil.oneindia.com/"
+
+  - name: OneIndia Tamil Nadu Politics
+    type: news_site
+    crawl_method: rss
+    rss_url: "https://tamil.oneindia.com/rss/politics-tamilnadu-fb.xml"
+    url: "https://tamil.oneindia.com/news/tamilnadu/"
+
+  - name: News18 Tamil Politics
+    type: news_site
+    crawl_method: rss
+    rss_url: "https://tamil.news18.com/rss/politics.xml"
+    url: "https://tamil.news18.com/"
+
+  - name: Samayam Tamil Top Stories
+    type: news_site
+    crawl_method: rss
+    rss_url: "https://tamil.samayam.com/rssfeedstopstories.cms"
+    url: "https://tamil.samayam.com/"
+
+  - name: The Hindu Tamil Nadu
+    type: news_site
+    crawl_method: rss
+    rss_url: "https://www.thehindu.com/news/national/tamil-nadu/?service=rss"
+    url: "https://www.thehindu.com/news/national/tamil-nadu/"
+
+  - name: Vikatan Tamil Nadu
+    type: news_site
+    crawl_method: rss
+    rss_url: "https://www.vikatan.com/news/tamilnadu.rss"
+    url: "https://www.vikatan.com/news/tamilnadu"
+
+  - name: Puthiya Thalaimurai
+    type: news_site
+    crawl_method: html
+    url: "https://www.puthiyathalaimurai.com/"
+
+  - name: Hindu Tamil Thisai
+    type: news_site
+    crawl_method: html
+    url: "https://www.hindutamil.in/"
+
+youtube_channels:
+  # Channel IDs added from the provided React prototype. Verify before production use.
+  - name: Puthiyathalaimurai TV
+    type: youtube
+    crawl_method: youtube_api
+    youtube_channel_id: "UCRHbHHMEJJOHSMsGaDd8P_Q"
+    url: "https://www.youtube.com/@puthiyathalaimuraitv"
+
+  - name: News7 Tamil
+    type: youtube
+    crawl_method: youtube_api
+    youtube_channel_id: "UCKBpHRFbRxJFBFzZygpkVkA"
+    url: "https://www.youtube.com/@news7tamil"
+
+  - name: Thanthi TV
+    type: youtube
+    crawl_method: youtube_api
+    youtube_channel_id: "UC3C7jFzMDkD4X_dUFON_pqA"
+    url: "https://www.youtube.com/@ThanthiTV"
+
+  - name: Polimer News
+    type: youtube
+    crawl_method: youtube_api
+    youtube_channel_id: "UC-U7JBpFrBj5_SUrmiVclow"
+    url: "https://www.youtube.com/@PolimerNews"
+
+  - name: Raj News
+    type: youtube
+    crawl_method: youtube_api
+    youtube_channel_id: "UCDOcbGJMu-BQSN6mKGHCDAw"
+    url: "https://www.youtube.com/@rajnewstamil"
+
+  - name: Sathiyam TV
+    type: youtube
+    crawl_method: youtube_api
+    youtube_channel_id: "UC8M_5bHPqTsmfx6p5eLBTxQ"
+    url: "https://www.youtube.com/@SathiyamNews"
+
+  - name: Sun News
+    type: youtube
+    crawl_method: youtube_api
+    youtube_channel_id: "UCmDm1xAF72ZK3bxqHEhfpOw"
+    url: "https://www.youtube.com/@sunnewstamil"
+
+  - name: News18 Tamil Nadu
+    type: youtube
+    crawl_method: youtube_api
+    youtube_channel_id: ""
+    url: "https://www.youtube.com/@News18TamilNadu"
+
+x_queries:
+  - name: Tamil Nadu News General
+    type: x
+    crawl_method: x_api
+    x_query: '("Tamil Nadu" OR TamilNadu OR தமிழ்நாடு OR சென்னை OR திமுக OR அதிமுக OR பாஜக OR விஜய் OR சீமான் OR ஆளுநர் OR மழை OR வேலை OR கல்வி OR சாலை OR மருத்துவம் OR குற்றம்) lang:ta -is:retweet'
+    url: "https://x.com/search"
+
+  - name: Tamil Nadu Public Issues
+    type: x
+    crawl_method: x_api
+    x_query: '(தமிழ்நாடு OR சென்னை OR மதுரை OR கோயம்புத்தூர்) (மழை OR வேலை OR கல்வி OR NEET OR சாலை OR மின்சாரம் OR மருத்துவம் OR விலை) lang:ta -is:retweet'
+    url: "https://x.com/search"

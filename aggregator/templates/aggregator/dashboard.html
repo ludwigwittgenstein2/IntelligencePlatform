@@ -1,0 +1,1088 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Tamil Nadu News Intelligence</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: #07090f;
+            color: #b8cce0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, "Noto Sans Tamil", sans-serif;
+            font-size: 14px;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .page {
+            min-height: 100vh;
+            background: #07090f;
+        }
+
+        .topbar {
+            background: #0b0f1c;
+            border-bottom: 1px solid #1a2638;
+            padding: 14px 22px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .brand-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .brand-left {
+            display: flex;
+            align-items: baseline;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .brand-tamil {
+            color: #e8a820;
+            font-size: 28px;
+            font-weight: 900;
+            line-height: 1;
+        }
+
+        .brand-main {
+            color: #e2edf8;
+            font-size: 22px;
+            font-weight: 900;
+        }
+
+        .brand-subtitle {
+            color: #6f849b;
+            font-size: 12px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .top-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+
+        .language-switch {
+            display: flex;
+            background: #0f1624;
+            border: 1px solid #1a2638;
+            border-radius: 999px;
+            padding: 4px;
+            gap: 4px;
+        }
+
+        .lang-btn {
+            border: none;
+            background: transparent;
+            color: #8fa8c2;
+            padding: 7px 13px;
+            border-radius: 999px;
+            font-size: 13px;
+            cursor: pointer;
+            font-weight: 800;
+        }
+
+        .lang-btn.active {
+            background: #e8a820;
+            color: #07090f;
+        }
+
+        .mini-stat {
+            background: #0f1624;
+            border: 1px solid #1a2638;
+            border-radius: 999px;
+            padding: 6px 10px;
+            color: #8fa8c2;
+            font-size: 12px;
+        }
+
+        .mini-stat strong {
+            color: #e8a820;
+        }
+
+        .nav-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 14px;
+            flex-wrap: wrap;
+        }
+
+        .nav-link {
+            background: #111b2b;
+            border: 1px solid #26364f;
+            color: #b8cce0;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            display: inline-block;
+        }
+
+        .nav-link.active,
+        .nav-link:hover {
+            border-color: #e8a820;
+            color: #e8a820;
+        }
+
+        .container {
+            max-width: 1450px;
+            margin: 0 auto;
+            padding: 22px;
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 18px;
+            flex-wrap: wrap;
+        }
+
+        .search-input,
+        .select-input {
+            background: #0f1624;
+            color: #d9e6f2;
+            border: 1px solid #1a2638;
+            border-radius: 8px;
+            padding: 10px 12px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .search-input {
+            min-width: 280px;
+            flex: 1;
+        }
+
+        .select-input {
+            min-width: 180px;
+        }
+
+        .layout {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 340px;
+            gap: 20px;
+            align-items: start;
+        }
+
+        .card {
+            background: #0f1624;
+            border: 1px solid #1a2638;
+            border-radius: 14px;
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.18);
+        }
+
+        .card:hover {
+            border-color: #2a3a52;
+        }
+
+        .section-title {
+            color: #e2edf8;
+            font-size: 22px;
+            font-weight: 900;
+            margin: 0 0 14px 0;
+        }
+
+        .card-label {
+            color: #6f849b;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.11em;
+            font-weight: 900;
+            margin-bottom: 12px;
+        }
+
+        .article-card {
+            display: block;
+        }
+
+        .article-inner {
+            display: grid;
+            grid-template-columns: 120px minmax(0, 1fr);
+            gap: 14px;
+        }
+
+        .article-thumb {
+            width: 120px;
+            height: 72px;
+            border-radius: 10px;
+            object-fit: cover;
+            background: #0b0f1c;
+            border: 1px solid #1a2638;
+        }
+
+        .article-no-thumb {
+            width: 120px;
+            height: 72px;
+            border-radius: 10px;
+            background: #0b0f1c;
+            border: 1px solid #1a2638;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6f849b;
+            font-size: 22px;
+        }
+
+        .article-meta {
+            display: flex;
+            gap: 7px;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 10px;
+        }
+
+        .pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 8px;
+            border-radius: 999px;
+            font-size: 11px;
+            line-height: 1;
+            background: #162236;
+            border: 1px solid #26364f;
+            color: #9eb7d0;
+            white-space: nowrap;
+        }
+
+        .pill-source {
+            color: #e8a820;
+            background: rgba(232, 168, 32, 0.09);
+            border-color: rgba(232, 168, 32, 0.35);
+        }
+
+        .pill-youtube {
+            color: #ff5555;
+            background: rgba(255, 32, 32, 0.09);
+            border-color: rgba(255, 32, 32, 0.35);
+        }
+
+        .pill-job {
+            color: #22c46a;
+            background: rgba(34, 196, 106, 0.09);
+            border-color: rgba(34, 196, 106, 0.3);
+        }
+
+        .pill-topic {
+            color: #22c46a;
+            background: rgba(34, 196, 106, 0.09);
+            border-color: rgba(34, 196, 106, 0.3);
+            margin-right: 5px;
+            margin-top: 5px;
+        }
+
+        .title-ta,
+        .title-en {
+            color: #dfeafa;
+            font-size: 20px;
+            line-height: 1.55;
+            font-weight: 900;
+            margin-bottom: 8px;
+            word-break: break-word;
+        }
+
+        .title-en {
+            font-size: 19px;
+        }
+
+        .summary-block {
+            margin-top: 12px;
+            padding: 12px;
+            background: #0b0f1c;
+            border: 1px solid #1a2638;
+            border-radius: 10px;
+        }
+
+        .summary-label {
+            color: #8fa8c2;
+            font-size: 12px;
+            font-weight: 900;
+            margin-bottom: 6px;
+        }
+
+        .summary-text {
+            color: #c4d4e4;
+            line-height: 1.7;
+            font-size: 14px;
+            word-break: break-word;
+        }
+
+        .key-stories-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .key-story-card {
+            background: #0b0f1c;
+            border: 1px solid #1a2638;
+            border-radius: 12px;
+            padding: 13px;
+            min-height: 150px;
+            display: block;
+        }
+
+        .key-story-card:hover {
+            border-color: #e8a820;
+        }
+
+        .key-story-title {
+            color: #dfeafa;
+            font-size: 14px;
+            font-weight: 900;
+            line-height: 1.55;
+            margin-top: 8px;
+        }
+
+        .signals {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            color: #8fa8c2;
+            font-size: 13px;
+            margin-top: 12px;
+        }
+
+        .signals strong {
+            color: #dfeafa;
+        }
+
+        .sidebar {
+            position: sticky;
+            top: 122px;
+        }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .stat-card {
+            background: #0b0f1c;
+            border: 1px solid #1a2638;
+            border-radius: 12px;
+            padding: 12px;
+        }
+
+        .stat-value {
+            color: #e8a820;
+            font-size: 26px;
+            font-weight: 900;
+            line-height: 1;
+        }
+
+        .stat-name {
+            color: #6f849b;
+            font-size: 12px;
+            margin-top: 6px;
+        }
+
+        .list-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 9px 0;
+            border-bottom: 1px solid #1a2638;
+            font-size: 13px;
+        }
+
+        .list-row:last-child {
+            border-bottom: none;
+        }
+
+        .list-name {
+            color: #c4d4e4;
+            overflow-wrap: anywhere;
+        }
+
+        .list-count {
+            color: #e8a820;
+            font-weight: 900;
+            white-space: nowrap;
+        }
+
+        .muted {
+            color: #6f849b;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .lang-block {
+            display: none;
+        }
+
+        body.lang-en .lang-en {
+            display: block;
+        }
+
+        body.lang-ta .lang-ta {
+            display: block;
+        }
+
+        body.lang-ta .label-en {
+            display: none;
+        }
+
+        body.lang-en .label-ta {
+            display: none;
+        }
+
+        @media (max-width: 1200px) {
+            .key-stories-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 1000px) {
+            .layout {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                position: static;
+            }
+
+            .search-input {
+                min-width: 100%;
+            }
+        }
+
+        @media (max-width: 700px) {
+            .article-inner {
+                grid-template-columns: 1fr;
+            }
+
+            .article-thumb,
+            .article-no-thumb {
+                width: 100%;
+                height: 170px;
+            }
+
+            .key-stories-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 14px;
+            }
+
+            .topbar {
+                padding: 14px;
+            }
+
+            .title-ta,
+            .title-en {
+                font-size: 17px;
+            }
+
+            .brand-main {
+                font-size: 19px;
+            }
+        }
+    </style>
+</head>
+
+<body class="lang-en">
+<div class="page">
+
+    <header class="topbar">
+        <div class="brand-row">
+            <div class="brand-left">
+                <div class="brand-tamil">தமிழ்</div>
+                <div class="brand-main">NewsIQ</div>
+                <div class="brand-subtitle">
+                    <span class="label-en">Tamil Nadu News, Jobs, and Public Intelligence</span>
+                    <span class="label-ta">தமிழ்நாடு செய்திகள், வேலைவாய்ப்பு, நுண்ணறிவு</span>
+                </div>
+            </div>
+
+            <div class="top-right">
+                <div class="language-switch">
+                    <button type="button" class="lang-btn" data-lang="en">English</button>
+                    <button type="button" class="lang-btn" data-lang="ta">தமிழ்</button>
+                </div>
+
+                <div class="mini-stat">
+                    <strong>{{ items|length }}</strong>
+                    <span class="label-en">loaded</span>
+                    <span class="label-ta">ஏற்றப்பட்டது</span>
+                </div>
+
+                <div class="mini-stat">
+                    <strong>{{ sources|length }}</strong>
+                    <span class="label-en">sources</span>
+                    <span class="label-ta">மூலங்கள்</span>
+                </div>
+
+                <div class="mini-stat">
+                    ▶ <strong>{{ youtube_count }}</strong>
+                    <span class="label-en">YouTube</span>
+                    <span class="label-ta">யூடியூப்</span>
+                </div>
+
+                <div class="mini-stat">
+                    💼 <strong>{{ jobs_count|default:0 }}</strong>
+                    <span class="label-en">Jobs</span>
+                    <span class="label-ta">வேலைகள்</span>
+                </div>
+            </div>
+        </div>
+
+        <nav class="nav-row">
+            <a class="nav-link active" href="/">
+                <span class="label-en">📰 Feed</span>
+                <span class="label-ta">📰 செய்திகள்</span>
+            </a>
+
+            <a class="nav-link" href="/jobs/">
+                <span class="label-en">💼 Jobs</span>
+                <span class="label-ta">💼 வேலைவாய்ப்பு</span>
+            </a>
+
+            <a class="nav-link" href="/reports/">
+                <span class="label-en">Reports</span>
+                <span class="label-ta">அறிக்கைகள்</span>
+            </a>
+
+            <a class="nav-link" href="/alerts/">
+                <span class="label-en">Alerts</span>
+                <span class="label-ta">எச்சரிக்கைகள்</span>
+            </a>
+
+            <a class="nav-link" href="/admin/" target="_blank">
+                <span class="label-en">Admin</span>
+                <span class="label-ta">நிர்வாகம்</span>
+            </a>
+        </nav>
+    </header>
+
+    <div class="container">
+
+        <div class="controls">
+            <input
+                id="searchBox"
+                class="search-input"
+                type="text"
+                placeholder="Search news, jobs, Tamil titles, English summaries, topics..."
+            >
+
+            <select id="sourceFilter" class="select-input">
+                <option value="all">All sources</option>
+                <option value="news_site">News sites</option>
+                <option value="youtube">YouTube</option>
+                <option value="jobs">Jobs</option>
+                <option value="x">X / Twitter</option>
+            </select>
+        </div>
+
+        {% if latest_report and latest_report.top_stories %}
+        <section class="card">
+            <div class="card-label">
+                <span class="label-en">Key Stories to Review</span>
+                <span class="label-ta">கவனிக்க வேண்டிய முக்கிய செய்திகள்</span>
+            </div>
+
+            <div class="key-stories-grid">
+                {% for story in latest_report.top_stories|slice:":4" %}
+                <a href="{{ story.url }}" target="_blank" class="key-story-card">
+                    <div class="article-meta">
+                        <span class="pill pill-source">{{ story.source }}</span>
+
+                        {% if story.source_type == "youtube" %}
+                            <span class="pill pill-youtube">▶ YouTube</span>
+                        {% elif story.source_type == "jobs" %}
+                            <span class="pill pill-job">💼 Job</span>
+                        {% elif story.source_type == "x" %}
+                            <span class="pill">𝕏 Twitter</span>
+                        {% else %}
+                            <span class="pill">
+                                <span class="label-en">News Site</span>
+                                <span class="label-ta">செய்தித் தளம்</span>
+                            </span>
+                        {% endif %}
+                    </div>
+
+                    <div class="lang-block lang-en">
+                        <div class="key-story-title">
+                            {% if story.title_en %}
+                                {{ story.title_en }}
+                            {% elif story.title_ta %}
+                                {{ story.title_ta }}
+                            {% else %}
+                                <span class="muted">Title pending.</span>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="lang-block lang-ta">
+                        <div class="key-story-title">
+                            {% if story.title_ta %}
+                                {{ story.title_ta }}
+                            {% elif story.title_en %}
+                                {{ story.title_en }}
+                            {% else %}
+                                <span class="muted">தமிழ் தலைப்பு இல்லை.</span>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    {% if story.topics %}
+                    <div class="signals">
+                        <span>
+                            <span class="label-en">Topics</span>
+                            <span class="label-ta">தலைப்புகள்</span>:
+                            <strong>{{ story.topics|join:", " }}</strong>
+                        </span>
+                    </div>
+                    {% endif %}
+                </a>
+                {% endfor %}
+            </div>
+
+            <div style="margin-top: 14px;">
+                <a class="nav-link" href="/reports/">
+                    <span class="label-en">Open full intelligence reports →</span>
+                    <span class="label-ta">முழு நுண்ணறிவு அறிக்கைகளைத் திறக்கவும் →</span>
+                </a>
+            </div>
+        </section>
+        {% endif %}
+
+        <div class="layout">
+
+            <main>
+                <h1 class="section-title">
+                    <span class="label-en">Latest Feed</span>
+                    <span class="label-ta">சமீபத்திய செய்திகள்</span>
+                </h1>
+
+                <div class="muted" style="margin-bottom: 14px;">
+                    <span id="visibleCount">{{ items|length }}</span>
+                    <span class="label-en">visible items</span>
+                    <span class="label-ta">செய்திகள் காண்பிக்கப்படுகிறது</span>
+                </div>
+
+                {% for item in items %}
+                <a
+                    href="{{ item.url }}"
+                    target="_blank"
+                    class="card article-card js-item"
+                    data-source-type="{{ item.source.source_type }}"
+                    data-search="
+                        {{ item.title_ta|default:'' }}
+                        {{ item.title_en|default:'' }}
+                        {{ item.body_ta|default:'' }}
+                        {{ item.body_en|default:'' }}
+                        {% if item.nlp %}
+                            {{ item.nlp.summary_ta|default:'' }}
+                            {{ item.nlp.summary_en|default:'' }}
+                            {{ item.nlp.topics|default:'' }}
+                            {{ item.nlp.people|default:'' }}
+                            {{ item.nlp.parties|default:'' }}
+                            {{ item.nlp.districts|default:'' }}
+                        {% endif %}
+                    "
+                >
+                    <div class="article-inner">
+
+                        {% if item.metrics.thumbnail_url %}
+                            <img class="article-thumb" src="{{ item.metrics.thumbnail_url }}" alt="">
+                        {% elif item.source.source_type == "youtube" and item.metrics.video_id %}
+                            <img class="article-thumb" src="https://img.youtube.com/vi/{{ item.metrics.video_id }}/mqdefault.jpg" alt="">
+                        {% else %}
+                            <div class="article-no-thumb">
+                                {% if item.source.source_type == "youtube" %}
+                                    ▶
+                                {% elif item.source.source_type == "jobs" %}
+                                    💼
+                                {% else %}
+                                    📰
+                                {% endif %}
+                            </div>
+                        {% endif %}
+
+                        <div>
+                            <div class="article-meta">
+                                <span class="pill pill-source">{{ item.source.name }}</span>
+
+                                {% if item.source.source_type == "youtube" %}
+                                    <span class="pill pill-youtube">▶ YouTube</span>
+                                {% elif item.source.source_type == "jobs" %}
+                                    <span class="pill pill-job">💼 Job</span>
+                                {% elif item.source.source_type == "x" %}
+                                    <span class="pill">𝕏 Twitter</span>
+                                {% else %}
+                                    <span class="pill">
+                                        <span class="label-en">News Site</span>
+                                        <span class="label-ta">செய்தித் தளம்</span>
+                                    </span>
+                                {% endif %}
+
+                                {% if item.published_at %}
+                                    <span class="pill">{{ item.published_at|timesince }} ago</span>
+                                {% endif %}
+
+                                {% if item.metrics.view_count %}
+                                    <span class="pill">👁 {{ item.metrics.view_count }}</span>
+                                {% endif %}
+
+                                {% if item.metrics.comment_count %}
+                                    <span class="pill">💬 {{ item.metrics.comment_count }}</span>
+                                {% endif %}
+
+                                {% if item.metrics.salary_text %}
+                                    <span class="pill pill-job">₹ {{ item.metrics.salary_text }}</span>
+                                {% endif %}
+
+                                {% if item.metrics.district %}
+                                    <span class="pill">📍 {{ item.metrics.district }}</span>
+                                {% endif %}
+                            </div>
+
+                            <div class="lang-block lang-en">
+                                <div class="title-en">
+                                    {% if item.title_en %}
+                                        {{ item.title_en }}
+                                    {% elif item.title_ta %}
+                                        {{ item.title_ta }}
+                                    {% else %}
+                                        <span class="muted">Title pending.</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <div class="lang-block lang-ta">
+                                <div class="title-ta">
+                                    {% if item.title_ta %}
+                                        {{ item.title_ta }}
+                                    {% elif item.title_en %}
+                                        {{ item.title_en }}
+                                    {% else %}
+                                        <span class="muted">தமிழ் தலைப்பு இல்லை.</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            {% if item.nlp %}
+                            <div class="lang-block lang-en">
+                                <div class="summary-block">
+                                    <div class="summary-label">Summary</div>
+                                    <div class="summary-text">
+                                        {% if item.nlp.summary_en and item.nlp.summary_en != "." %}
+                                            {{ item.nlp.summary_en }}
+                                        {% elif item.nlp.summary_ta and item.nlp.summary_ta != "." %}
+                                            {{ item.nlp.summary_ta }}
+                                        {% else %}
+                                            <span class="muted">Summary pending.</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="lang-block lang-ta">
+                                <div class="summary-block">
+                                    <div class="summary-label">சுருக்கம்</div>
+                                    <div class="summary-text">
+                                        {% if item.nlp.summary_ta and item.nlp.summary_ta != "." %}
+                                            {{ item.nlp.summary_ta }}
+                                        {% elif item.nlp.summary_en and item.nlp.summary_en != "." %}
+                                            {{ item.nlp.summary_en }}
+                                        {% else %}
+                                            <span class="muted">தமிழ் சுருக்கம் இன்னும் உருவாக்கப்படவில்லை.</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+
+                            {% if item.nlp.topics %}
+                            <div style="margin-top: 12px;">
+                                {% for topic in item.nlp.topics %}
+                                    <span class="pill pill-topic">{{ topic }}</span>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+
+                            {% if item.nlp %}
+                            <div class="signals">
+                                <span>
+                                    <span class="label-en">Intensity</span>
+                                    <span class="label-ta">தீவிரம்</span>
+                                    <strong>{{ item.nlp.intensity_score|floatformat:2 }}</strong>
+                                </span>
+
+                                <span>
+                                    <span class="label-en">News relevance</span>
+                                    <span class="label-ta">செய்தி தொடர்பு</span>
+                                    <strong>{{ item.nlp.news_relevance_score|floatformat:2 }}</strong>
+                                </span>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </a>
+                {% empty %}
+                <div class="card">
+                    <div class="lang-block lang-en">
+                        <div class="title-en">No items found yet.</div>
+                        <div class="summary-text">Run the crawler and analysis commands first.</div>
+                    </div>
+
+                    <div class="lang-block lang-ta">
+                        <div class="title-ta">செய்திகள் இன்னும் இல்லை.</div>
+                        <div class="summary-text">முதலில் crawler மற்றும் analysis commands இயக்கவும்.</div>
+                    </div>
+                </div>
+                {% endfor %}
+            </main>
+
+            <aside class="sidebar">
+
+                <div class="card">
+                    <div class="card-label">
+                        <span class="label-en">Quick Stats</span>
+                        <span class="label-ta">விரைவு புள்ளிவிவரங்கள்</span>
+                    </div>
+
+                    <div class="stat-grid">
+                        <div class="stat-card">
+                            <div class="stat-value">{{ items|length }}</div>
+                            <div class="stat-name">
+                                <span class="label-en">Loaded items</span>
+                                <span class="label-ta">ஏற்றப்பட்ட செய்திகள்</span>
+                            </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-value">{{ news_site_count }}</div>
+                            <div class="stat-name">
+                                <span class="label-en">News sites</span>
+                                <span class="label-ta">செய்தித் தளங்கள்</span>
+                            </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-value">{{ youtube_count }}</div>
+                            <div class="stat-name">
+                                <span class="label-en">YouTube</span>
+                                <span class="label-ta">யூடியூப்</span>
+                            </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-value">{{ jobs_count|default:0 }}</div>
+                            <div class="stat-name">
+                                <span class="label-en">Jobs</span>
+                                <span class="label-ta">வேலைகள்</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-label">
+                        <span class="label-en">Top Topics</span>
+                        <span class="label-ta">முக்கிய தலைப்புகள்</span>
+                    </div>
+
+                    {% for name, count in topic_counts %}
+                    <div class="list-row">
+                        <span class="list-name">{{ name }}</span>
+                        <span class="list-count">{{ count }}</span>
+                    </div>
+                    {% empty %}
+                    <div class="muted">
+                        <span class="label-en">No topic data yet.</span>
+                        <span class="label-ta">தலைப்பு தரவு இன்னும் இல்லை.</span>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <div class="card">
+                    <div class="card-label">
+                        <span class="label-en">People Mentioned</span>
+                        <span class="label-ta">குறிப்பிடப்பட்ட நபர்கள்</span>
+                    </div>
+
+                    {% for name, count in people_counts %}
+                    <div class="list-row">
+                        <span class="list-name">{{ name }}</span>
+                        <span class="list-count">{{ count }}</span>
+                    </div>
+                    {% empty %}
+                    <div class="muted">
+                        <span class="label-en">No people data yet.</span>
+                        <span class="label-ta">நபர் தரவு இன்னும் இல்லை.</span>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <div class="card">
+                    <div class="card-label">
+                        <span class="label-en">Parties / Organizations</span>
+                        <span class="label-ta">கட்சிகள் / அமைப்புகள்</span>
+                    </div>
+
+                    {% for name, count in party_counts %}
+                    <div class="list-row">
+                        <span class="list-name">{{ name }}</span>
+                        <span class="list-count">{{ count }}</span>
+                    </div>
+                    {% empty %}
+                    <div class="muted">
+                        <span class="label-en">No party data yet.</span>
+                        <span class="label-ta">கட்சி தரவு இன்னும் இல்லை.</span>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <div class="card">
+                    <div class="card-label">
+                        <span class="label-en">Districts</span>
+                        <span class="label-ta">மாவட்டங்கள்</span>
+                    </div>
+
+                    {% for name, count in district_counts %}
+                    <div class="list-row">
+                        <span class="list-name">{{ name }}</span>
+                        <span class="list-count">{{ count }}</span>
+                    </div>
+                    {% empty %}
+                    <div class="muted">
+                        <span class="label-en">No district data yet.</span>
+                        <span class="label-ta">மாவட்ட தரவு இன்னும் இல்லை.</span>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <div class="card">
+                    <div class="card-label">
+                        <span class="label-en">Source Activity</span>
+                        <span class="label-ta">மூல செயல்பாடு</span>
+                    </div>
+
+                    {% for name, count in source_counts %}
+                    <div class="list-row">
+                        <span class="list-name">{{ name }}</span>
+                        <span class="list-count">{{ count }}</span>
+                    </div>
+                    {% empty %}
+                    <div class="muted">
+                        <span class="label-en">No source activity yet.</span>
+                        <span class="label-ta">மூல செயல்பாடு இன்னும் இல்லை.</span>
+                    </div>
+                    {% endfor %}
+                </div>
+
+            </aside>
+
+        </div>
+    </div>
+
+</div>
+
+<script>
+    const searchBox = document.getElementById("searchBox");
+    const sourceFilter = document.getElementById("sourceFilter");
+    const visibleCount = document.getElementById("visibleCount");
+    const items = Array.from(document.querySelectorAll(".js-item"));
+    const langButtons = Array.from(document.querySelectorAll(".lang-btn"));
+
+    function applyFilters() {
+        const query = searchBox.value.toLowerCase().trim();
+        const sourceType = sourceFilter.value;
+
+        localStorage.setItem("newsiq_search", searchBox.value);
+        localStorage.setItem("newsiq_source_filter", sourceType);
+
+        let visible = 0;
+
+        items.forEach(item => {
+            const text = item.dataset.search.toLowerCase();
+            const itemSourceType = item.dataset.sourceType;
+
+            const matchesSearch = !query || text.includes(query);
+            const matchesSource = sourceType === "all" || itemSourceType === sourceType;
+
+            if (matchesSearch && matchesSource) {
+                item.classList.remove("hidden");
+                visible += 1;
+            } else {
+                item.classList.add("hidden");
+            }
+        });
+
+        visibleCount.textContent = visible;
+    }
+
+    function setLanguage(lang) {
+        document.body.classList.remove("lang-en", "lang-ta");
+        document.body.classList.add(`lang-${lang}`);
+
+        localStorage.setItem("newsiq_language", lang);
+
+        langButtons.forEach(button => {
+            if (button.dataset.lang === lang) {
+                button.classList.add("active");
+            } else {
+                button.classList.remove("active");
+            }
+        });
+
+        if (lang === "ta") {
+            searchBox.placeholder = "தமிழ்/ஆங்கில செய்திகள், வேலைவாய்ப்பு, தலைப்புகளைத் தேடவும்...";
+        } else {
+            searchBox.placeholder = "Search news, jobs, Tamil titles, English summaries, topics...";
+        }
+    }
+
+    searchBox.addEventListener("input", applyFilters);
+    sourceFilter.addEventListener("change", applyFilters);
+
+    langButtons.forEach(button => {
+        button.addEventListener("click", () => {
+            setLanguage(button.dataset.lang);
+        });
+    });
+
+    const savedLanguage = localStorage.getItem("newsiq_language") || "en";
+    const savedSearch = localStorage.getItem("newsiq_search") || "";
+    const savedSourceFilter = localStorage.getItem("newsiq_source_filter") || "all";
+
+    searchBox.value = savedSearch;
+    sourceFilter.value = savedSourceFilter;
+
+    setLanguage(savedLanguage);
+    applyFilters();
+
+    setInterval(() => {
+        window.location.reload();
+    }, 300000);
+</script>
+
+</body>
+</html>
