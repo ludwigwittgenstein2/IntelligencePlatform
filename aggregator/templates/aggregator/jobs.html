@@ -1,476 +1,65 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>JobsIQ - Tamil Nadu Jobs Intelligence</title>
-
-    <style>
-        * {
-            box-sizing: border-box;
-        }
-
-        body {
-            margin: 0;
-            background: #07090f;
-            color: #b8cce0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, "Noto Sans Tamil", sans-serif;
-            font-size: 14px;
-        }
-
-        a {
-            color: inherit;
-            text-decoration: none;
-        }
-
-        .topbar {
-            background: #0b0f1c;
-            border-bottom: 1px solid #1a2638;
-            padding: 14px 22px;
-            position: sticky;
-            top: 0;
-            z-index: 10;
-        }
-
-        .brand-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
-
-        .brand-left {
-            display: flex;
-            align-items: baseline;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-
-        .brand-tamil {
-            color: #e8a820;
-            font-size: 28px;
-            font-weight: 900;
-            line-height: 1;
-        }
-
-        .brand-main {
-            color: #e2edf8;
-            font-size: 22px;
-            font-weight: 900;
-        }
-
-        .brand-subtitle {
-            color: #6f849b;
-            font-size: 12px;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-        }
-
-        .language-switch {
-            display: flex;
-            background: #0f1624;
-            border: 1px solid #1a2638;
-            border-radius: 999px;
-            padding: 4px;
-            gap: 4px;
-        }
-
-        .lang-btn {
-            border: none;
-            background: transparent;
-            color: #8fa8c2;
-            padding: 7px 13px;
-            border-radius: 999px;
-            font-size: 13px;
-            cursor: pointer;
-            font-weight: 800;
-        }
-
-        .lang-btn.active {
-            background: #e8a820;
-            color: #07090f;
-        }
-
-        .nav-row {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-top: 14px;
-            flex-wrap: wrap;
-        }
-
-        .nav-link {
-            background: #111b2b;
-            border: 1px solid #26364f;
-            color: #b8cce0;
-            padding: 8px 12px;
-            border-radius: 8px;
-            font-size: 13px;
-            display: inline-block;
-        }
-
-        .nav-link.active,
-        .nav-link:hover {
-            border-color: #e8a820;
-            color: #e8a820;
-        }
-
-        .container {
-            max-width: 1450px;
-            margin: 0 auto;
-            padding: 22px;
-        }
-
-        .section-title {
-            color: #e2edf8;
-            font-size: 26px;
-            font-weight: 900;
-            margin: 0 0 8px 0;
-        }
-
-        .subtitle {
-            color: #8fa8c2;
-            line-height: 1.6;
-            margin-bottom: 18px;
-        }
-
-        .controls {
-            display: grid;
-            grid-template-columns: minmax(0, 1fr) 160px 220px 190px 150px 120px;
-            gap: 10px;
-            margin-bottom: 18px;
-        }
-
-        .input {
-            background: #0f1624;
-            color: #d9e6f2;
-            border: 1px solid #1a2638;
-            border-radius: 8px;
-            padding: 10px 12px;
-            font-size: 14px;
-            outline: none;
-            width: 100%;
-        }
-
-        .button {
-            background: #e8a820;
-            color: #07090f;
-            border: none;
-            border-radius: 8px;
-            padding: 10px 12px;
-            font-weight: 900;
-            cursor: pointer;
-        }
-
-        .layout {
-            display: grid;
-            grid-template-columns: minmax(0, 1fr) 340px;
-            gap: 20px;
-            align-items: start;
-        }
-
-        .card {
-            background: #0f1624;
-            border: 1px solid #1a2638;
-            border-radius: 14px;
-            padding: 16px;
-            margin-bottom: 16px;
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.18);
-        }
-
-        .card:hover {
-            border-color: #2a3a52;
-        }
-
-        .card-label {
-            color: #6f849b;
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 0.11em;
-            font-weight: 900;
-            margin-bottom: 12px;
-        }
-
-        .job-card {
-            display: block;
-        }
-
-        .job-header {
-            display: flex;
-            align-items: flex-start;
-            justify-content: space-between;
-            gap: 14px;
-            flex-wrap: wrap;
-        }
-
-        .job-title {
-            color: #e2edf8;
-            font-size: 19px;
-            font-weight: 900;
-            line-height: 1.45;
-            margin-bottom: 8px;
-        }
-
-        .job-company {
-            color: #e8a820;
-            font-weight: 800;
-            margin-bottom: 8px;
-        }
-
-        .job-description {
-            color: #b8cce0;
-            line-height: 1.65;
-            margin-top: 12px;
-        }
-
-        .job-deadline {
-            background: #0b0f1c;
-            border: 1px solid #26364f;
-            border-radius: 10px;
-            padding: 10px;
-            min-width: 150px;
-            text-align: right;
-        }
-
-        .deadline-label {
-            color: #6f849b;
-            font-size: 11px;
-            text-transform: uppercase;
-            font-weight: 900;
-            margin-bottom: 4px;
-        }
-
-        .deadline-value {
-            color: #e2edf8;
-            font-weight: 900;
-        }
-
-        .pill-row {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-            margin-top: 10px;
-        }
-
-        .pill {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            padding: 5px 9px;
-            border-radius: 999px;
-            font-size: 12px;
-            background: #162236;
-            border: 1px solid #26364f;
-            color: #9eb7d0;
-            white-space: nowrap;
-        }
-
-        .pill-money {
-            color: #22c46a;
-            background: rgba(34, 196, 106, 0.09);
-            border-color: rgba(34, 196, 106, 0.3);
-        }
-
-        .pill-location {
-            color: #e8a820;
-            background: rgba(232, 168, 32, 0.09);
-            border-color: rgba(232, 168, 32, 0.35);
-        }
-
-        .pill-body {
-            color: #76b7ff;
-            background: rgba(118, 183, 255, 0.09);
-            border-color: rgba(118, 183, 255, 0.3);
-        }
-
-        .pill-qualification {
-            color: #d6b5ff;
-            background: rgba(214, 181, 255, 0.09);
-            border-color: rgba(214, 181, 255, 0.3);
-        }
-
-        .pill-valid {
-            color: #22c46a;
-            background: rgba(34, 196, 106, 0.09);
-            border-color: rgba(34, 196, 106, 0.3);
-        }
-
-        .pill-unchecked {
-            color: #e8a820;
-            background: rgba(232, 168, 32, 0.09);
-            border-color: rgba(232, 168, 32, 0.35);
-        }
-
-        .pill-broken {
-            color: #ff5555;
-            background: rgba(255, 85, 85, 0.09);
-            border-color: rgba(255, 85, 85, 0.35);
-        }
-
-        .list-row {
-            display: flex;
-            justify-content: space-between;
-            gap: 12px;
-            padding: 9px 0;
-            border-bottom: 1px solid #1a2638;
-            font-size: 13px;
-        }
-
-        .list-row:last-child {
-            border-bottom: none;
-        }
-
-        .list-name {
-            color: #c4d4e4;
-            overflow-wrap: anywhere;
-        }
-
-        .list-count {
-            color: #e8a820;
-            font-weight: 900;
-            white-space: nowrap;
-        }
-
-        .stat-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 16px;
-        }
-
-        .stat-card {
-            background: #0b0f1c;
-            border: 1px solid #1a2638;
-            border-radius: 12px;
-            padding: 12px;
-        }
-
-        .stat-value {
-            color: #e8a820;
-            font-size: 26px;
-            font-weight: 900;
-            line-height: 1;
-        }
-
-        .stat-name {
-            color: #6f849b;
-            font-size: 12px;
-            margin-top: 6px;
-        }
-
-        .sync-row {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin-bottom: 14px;
-        }
-
-        .status-card {
-            border-color: rgba(34, 196, 106, 0.35);
-        }
-
-        .error-card {
-            border-color: rgba(255, 85, 85, 0.45);
-        }
-
-        .muted {
-            color: #6f849b;
-        }
-
-        .lang-block {
-            display: none;
-        }
-
-        body.lang-en .lang-en {
-            display: block;
-        }
-
-        body.lang-ta .lang-ta {
-            display: block;
-        }
-
-        body.lang-ta .label-en {
-            display: none;
-        }
-
-        body.lang-en .label-ta {
-            display: none;
-        }
-
-        @media (max-width: 1150px) {
-            .controls {
-                grid-template-columns: 1fr 1fr;
-            }
-
-            .layout {
-                grid-template-columns: 1fr;
-            }
-
-            .job-deadline {
-                text-align: left;
-            }
-        }
-
-        @media (max-width: 700px) {
-            .controls {
-                grid-template-columns: 1fr;
-            }
-
-            .container {
-                padding: 14px;
-            }
-
-            .topbar {
-                padding: 14px;
-            }
-        }
-    </style>
-</head>
-
-<body class="lang-en">
-
-<header class="topbar">
-    <div class="brand-row">
-        <div class="brand-left">
-            <div class="brand-tamil">தமிழ்</div>
-            <div class="brand-main">JobsIQ</div>
-            <div class="brand-subtitle">
-                <span class="label-en">Tamil-first verified jobs, qualification, deadline, salary, and location intelligence</span>
-                <span class="label-ta">தமிழ்நாடு வேலைவாய்ப்பு, தகுதி, கடைசி தேதி, சம்பளம், இடம்</span>
-            </div>
-        </div>
-
-        <div class="language-switch">
-            <button type="button" class="lang-btn" data-lang="en">English</button>
-            <button type="button" class="lang-btn" data-lang="ta">தமிழ்</button>
-        </div>
-    </div>
-
-    <nav class="nav-row">
-        <a class="nav-link" href="/">
-            <span class="label-en">📰 NewsIQ</span>
-            <span class="label-ta">📰 செய்திகள்</span>
-        </a>
-
-        <a class="nav-link active" href="/jobs/">
-            <span class="label-en">💼 JobsIQ</span>
-            <span class="label-ta">💼 வேலைவாய்ப்பு</span>
-        </a>
-
-        <a class="nav-link" href="/alerts/">
-            <span class="label-en">Alerts</span>
-            <span class="label-ta">எச்சரிக்கைகள்</span>
-        </a>
-
-        <a class="nav-link" href="/admin/" target="_blank">
-            <span class="label-en">Admin</span>
-            <span class="label-ta">நிர்வாகம்</span>
-        </a>
-    </nav>
-</header>
-
-<div class="container">
+{% extends "aggregator/base.html" %}
+
+{% block title %}தமிழ் JobsIQ — Jobs{% endblock %}
+{% block brand %}JobsIQ{% endblock %}
+{% block subtitle_en %}Tamil-first verified jobs: qualification, deadline, salary &amp; location{% endblock %}
+{% block subtitle_ta %}தமிழ்நாடு வேலைவாய்ப்பு, தகுதி, கடைசி தேதி, சம்பளம், இடம்{% endblock %}
+{% block nav_active_jobs %}active{% endblock %}
+
+{% block topbar_stats %}
+    <div class="mini-stat">💼 <strong>{{ jobs_count }}</strong>
+        <span class="label-en">jobs</span><span class="label-ta">வேலைகள்</span></div>
+{% endblock %}
+
+{% block extra_css %}
+    /* Job-specific styles. Everything generic (topbar, nav, pills, cards,
+       lists, stat grid, language) is inherited from base.html. */
+    .subtitle { color: #8fa8c2; line-height: 1.6; margin-bottom: 18px; }
+
+    .controls-jobs {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 160px 220px 190px 150px 120px;
+        gap: 10px;
+        margin-bottom: 18px;
+    }
+    .input {
+        background: var(--panel); color: #d9e6f2; border: 1px solid var(--line);
+        border-radius: 8px; padding: 10px 12px; font-size: 14px; outline: none; width: 100%;
+    }
+    .button { background: var(--accent); color: var(--bg); border: none; border-radius: 8px; padding: 10px 12px; font-weight: 900; cursor: pointer; }
+
+    .job-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; flex-wrap: wrap; }
+    .job-title { color: var(--text-bright); font-size: 19px; font-weight: 900; line-height: 1.45; margin-bottom: 8px; display: block; }
+    .job-company { color: var(--accent); font-weight: 800; margin-bottom: 8px; }
+    .job-description { color: var(--text); line-height: 1.65; margin-top: 12px; }
+
+    .job-deadline { background: var(--panel-2); border: 1px solid var(--line-2); border-radius: 10px; padding: 10px; min-width: 150px; text-align: right; }
+    .deadline-label { color: var(--muted); font-size: 11px; text-transform: uppercase; font-weight: 900; margin-bottom: 4px; }
+    .deadline-value { color: var(--text-bright); font-weight: 900; }
+
+    .pill-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+    .pill-money { color: var(--green); background: rgba(34,196,106,0.09); border-color: rgba(34,196,106,0.3); }
+    .pill-location { color: var(--accent); background: rgba(232,168,32,0.09); border-color: rgba(232,168,32,0.35); }
+    .pill-body { color: #76b7ff; background: rgba(118,183,255,0.09); border-color: rgba(118,183,255,0.3); }
+    .pill-qualification { color: #d6b5ff; background: rgba(214,181,255,0.09); border-color: rgba(214,181,255,0.3); }
+    .pill-valid { color: var(--green); background: rgba(34,196,106,0.09); border-color: rgba(34,196,106,0.3); }
+    .pill-unchecked { color: var(--accent); background: rgba(232,168,32,0.09); border-color: rgba(232,168,32,0.35); }
+    .pill-broken { color: var(--red); background: rgba(255,85,85,0.09); border-color: rgba(255,85,85,0.35); }
+
+    .sync-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
+    .status-card { border-color: rgba(34,196,106,0.35); }
+    .error-card { border-color: rgba(255,85,85,0.45); }
+
+    @media (max-width: 1150px) {
+        .controls-jobs { grid-template-columns: 1fr 1fr; }
+        .job-deadline { text-align: left; }
+    }
+    @media (max-width: 700px) {
+        .controls-jobs { grid-template-columns: 1fr; }
+    }
+{% endblock %}
+
+{% block content %}
 
     <h1 class="section-title">
         <span class="label-en">JobsIQ: Tamil Nadu Jobs Intelligence</span>
@@ -478,19 +67,19 @@
     </h1>
 
     <div class="subtitle">
-        <span class="label-en">
-            Search Tamil Nadu jobs by recruiting body, qualification, district, salary, deadline, and link status.
-        </span>
-        <span class="label-ta">
-            ஆட்சேர்ப்பு அமைப்பு, தகுதி, மாவட்டம், சம்பளம், கடைசி தேதி ஆகியவற்றின் அடிப்படையில் வேலைவாய்ப்புகளைத் தேடலாம்.
-        </span>
+        <span class="label-en">Search Tamil Nadu jobs by recruiting body, qualification, district, salary, deadline, and link status.</span>
+        <span class="label-ta">ஆட்சேர்ப்பு அமைப்பு, தகுதி, மாவட்டம், சம்பளம், கடைசி தேதி ஆகியவற்றின் அடிப்படையில் வேலைவாய்ப்புகளைத் தேடலாம்.</span>
     </div>
 
+    {# Sync is staff-only: the view ignores ?sync=1 for the public, so only show
+       the button to staff. The "last updated" line stays visible to everyone. #}
     <div class="sync-row">
+        {% if user.is_staff %}
         <a class="nav-link" href="/jobs/?sync=1">
             <span class="label-en">↻ Sync jobs now</span>
             <span class="label-ta">↻ வேலைவாய்ப்புகளை புதுப்பிக்கவும்</span>
         </a>
+        {% endif %}
 
         {% if latest_job_updated_at %}
         <span class="muted">
@@ -512,9 +101,7 @@
 
     {% if sync_error %}
     <div class="card error-card">
-        <div class="job-description">
-            <strong>Job sync failed:</strong> {{ sync_error }}
-        </div>
+        <div class="job-description"><strong>Job sync failed:</strong> {{ sync_error }}</div>
     </div>
     {% endif %}
 
@@ -527,52 +114,28 @@
     </div>
     {% endif %}
 
-    <form method="get" class="controls">
-        <input
-            class="input"
-            type="text"
-            name="q"
-            value="{{ query }}"
-            placeholder="Search role, department, skill..."
-        >
-
-        <input
-            class="input"
-            type="text"
-            name="district"
-            value="{{ district }}"
-            placeholder="District"
-        >
+    <form method="get" class="controls-jobs">
+        <input class="input" type="text" name="q" value="{{ query }}" placeholder="Search role, department, skill...">
+        <input class="input" type="text" name="district" value="{{ district }}" placeholder="District">
 
         <select class="input" name="recruiting_body">
             <option value="">All recruiting bodies</option>
             {% for value, label in job_recruiting_body_choices %}
-                <option value="{{ value }}" {% if recruiting_body == value %}selected{% endif %}>
-                    {{ label }}
-                </option>
+                <option value="{{ value }}" {% if recruiting_body == value %}selected{% endif %}>{{ label }}</option>
             {% endfor %}
         </select>
 
         <select class="input" name="qualification_level">
             <option value="">All qualifications</option>
             {% for value, label in job_qualification_choices %}
-                <option value="{{ value }}" {% if qualification_level == value %}selected{% endif %}>
-                    {{ label }}
-                </option>
+                <option value="{{ value }}" {% if qualification_level == value %}selected{% endif %}>{{ label }}</option>
             {% endfor %}
         </select>
 
-        <input
-            class="input"
-            type="number"
-            name="min_salary"
-            value="{{ min_salary }}"
-            placeholder="Min salary"
-        >
+        <input class="input" type="number" name="min_salary" value="{{ min_salary }}" placeholder="Min salary">
 
         <button class="button" type="submit">
-            <span class="label-en">Search</span>
-            <span class="label-ta">தேடு</span>
+            <span class="label-en">Search</span><span class="label-ta">தேடு</span>
         </button>
     </form>
 
@@ -580,269 +143,129 @@
 
         <main>
             {% for job in jobs %}
-            <a
-                href="{% if job.apply_url %}{{ job.apply_url }}{% else %}{{ job.content_item.url }}{% endif %}"
-                target="_blank"
-                class="card job-card"
-            >
+            {# Card is an <article>; the title links out, instead of the whole card being one anchor. #}
+            <article class="card">
                 <div class="job-header">
                     <div>
-                        <div class="job-title">
-                            {% if job.role %}
-                                {{ job.role }}
-                            {% elif job.content_item.title_en %}
-                                {{ job.content_item.title_en }}
-                            {% else %}
-                                {{ job.content_item.title_ta }}
-                            {% endif %}
-                        </div>
-
-                        {% if job.company %}
-                        <div class="job-company">{{ job.company }}</div>
-                        {% endif %}
+                        <a class="job-title"
+                           href="{% if job.apply_url %}{{ job.apply_url }}{% else %}{{ job.content_item.url }}{% endif %}"
+                           target="_blank" rel="noopener">
+                            {% if job.role %}{{ job.role }}{% elif job.content_item.title_en %}{{ job.content_item.title_en }}{% else %}{{ job.content_item.title_ta }}{% endif %}
+                        </a>
+                        {% if job.company %}<div class="job-company">{{ job.company }}</div>{% endif %}
                     </div>
 
                     <div class="job-deadline">
                         <div class="deadline-label">
-                            <span class="label-en">Deadline</span>
-                            <span class="label-ta">கடைசி தேதி</span>
+                            <span class="label-en">Deadline</span><span class="label-ta">கடைசி தேதி</span>
                         </div>
-
                         <div class="deadline-value">
-                            {% if job.deadline %}
-                                {{ job.deadline }}
-                            {% else %}
-                                <span class="muted">Not listed</span>
-                            {% endif %}
+                            {% if job.deadline %}{{ job.deadline }}{% else %}<span class="muted">Not listed</span>{% endif %}
                         </div>
                     </div>
                 </div>
 
                 <div class="pill-row">
-                    <span class="pill pill-body">
-                        {{ job.get_recruiting_body_display }}
-                    </span>
-
-                    <span class="pill pill-qualification">
-                        {{ job.get_qualification_level_display }}
-                    </span>
+                    <span class="pill pill-body">{{ job.get_recruiting_body_display }}</span>
+                    <span class="pill pill-qualification">{{ job.get_qualification_level_display }}</span>
 
                     {% if job.location or job.district %}
-                    <span class="pill pill-location">
-                        📍
-                        {% if job.district %}
-                            {{ job.district }}
-                        {% elif job.location %}
-                            {{ job.location }}
-                        {% endif %}
-                    </span>
+                    <span class="pill pill-location">📍 {% if job.district %}{{ job.district }}{% else %}{{ job.location }}{% endif %}</span>
                     {% endif %}
 
                     {% if job.salary_text %}
-                    <span class="pill pill-money">₹ {{ job.salary_text }}</span>
+                        <span class="pill pill-money">₹ {{ job.salary_text }}</span>
                     {% elif job.salary_min or job.salary_max %}
-                    <span class="pill pill-money">
-                        ₹
-                        {% if job.salary_min %}{{ job.salary_min }}{% endif %}
-                        -
-                        {% if job.salary_max %}{{ job.salary_max }}{% endif %}
-                    </span>
+                        <span class="pill pill-money">₹ {% if job.salary_min %}{{ job.salary_min }}{% endif %} - {% if job.salary_max %}{{ job.salary_max }}{% endif %}</span>
                     {% else %}
-                    <span class="pill">
-                        <span class="label-en">Salary not listed</span>
-                        <span class="label-ta">சம்பளம் குறிப்பிடப்படவில்லை</span>
-                    </span>
+                        <span class="pill"><span class="label-en">Salary not listed</span><span class="label-ta">சம்பளம் குறிப்பிடப்படவில்லை</span></span>
                     {% endif %}
 
                     {% if job.link_status == "valid" %}
-                    <span class="pill pill-valid">✓ Link valid</span>
+                        <span class="pill pill-valid">✓ Link valid</span>
                     {% elif job.link_status == "broken" %}
-                    <span class="pill pill-broken">⚠ Broken link</span>
+                        <span class="pill pill-broken">⚠ Broken link</span>
                     {% elif job.link_status == "blocked" %}
-                    <span class="pill pill-broken">⚠ Link blocked</span>
+                        <span class="pill pill-broken">⚠ Link blocked</span>
                     {% else %}
-                    <span class="pill pill-unchecked">Link unchecked</span>
+                        <span class="pill pill-unchecked">Link unchecked</span>
                     {% endif %}
                 </div>
 
                 <div class="pill-row">
-                    {% if job.category %}
-                    <span class="pill">{{ job.category }}</span>
-                    {% endif %}
-
-                    {% if job.job_type and job.job_type != "unknown" %}
-                    <span class="pill">{{ job.get_job_type_display }}</span>
-                    {% endif %}
-
-                    {% if job.work_mode and job.work_mode != "unknown" %}
-                    <span class="pill">{{ job.get_work_mode_display }}</span>
-                    {% endif %}
-
-                    {% if job.experience %}
-                    <span class="pill">{{ job.experience }}</span>
-                    {% endif %}
+                    {% if job.category %}<span class="pill">{{ job.category }}</span>{% endif %}
+                    {% if job.job_type and job.job_type != "unknown" %}<span class="pill">{{ job.get_job_type_display }}</span>{% endif %}
+                    {% if job.work_mode and job.work_mode != "unknown" %}<span class="pill">{{ job.get_work_mode_display }}</span>{% endif %}
+                    {% if job.experience %}<span class="pill">{{ job.experience }}</span>{% endif %}
                 </div>
 
                 {% if job.skills %}
                 <div class="pill-row">
-                    {% for skill in job.skills %}
-                    <span class="pill">{{ skill }}</span>
-                    {% endfor %}
+                    {% for skill in job.skills %}<span class="pill">{{ skill }}</span>{% endfor %}
                 </div>
                 {% endif %}
 
                 {% if job.content_item.body_en %}
-                <div class="job-description">
-                    {{ job.content_item.body_en|truncatechars:420 }}
-                </div>
+                <div class="job-description">{{ job.content_item.body_en|truncatechars:420 }}</div>
                 {% elif job.content_item.body_ta %}
-                <div class="job-description">
-                    {{ job.content_item.body_ta|truncatechars:420 }}
-                </div>
+                <div class="job-description">{{ job.content_item.body_ta|truncatechars:420 }}</div>
                 {% endif %}
-            </a>
+            </article>
             {% empty %}
             <div class="card">
                 <div class="job-title">
                     <span class="label-en">No jobs found yet.</span>
                     <span class="label-ta">வேலைவாய்ப்புகள் இன்னும் இல்லை.</span>
                 </div>
-
                 <div class="job-description">
-                    <span class="label-en">
-                        Click “Sync jobs now” or run the public job sync command.
-                    </span>
-                    <span class="label-ta">
-                        “வேலைவாய்ப்புகளை புதுப்பிக்கவும்” என்பதைக் கிளிக் செய்யவும்.
-                    </span>
+                    {% if user.is_staff %}
+                        <span class="label-en">Click “Sync jobs now” or run the public job sync command.</span>
+                        <span class="label-ta">“வேலைவாய்ப்புகளை புதுப்பிக்கவும்” என்பதைக் கிளிக் செய்யவும்.</span>
+                    {% else %}
+                        <span class="label-en">No listings available right now. Please check back soon.</span>
+                        <span class="label-ta">தற்போது வேலைவாய்ப்புகள் இல்லை. சிறிது நேரத்தில் மீண்டும் பார்க்கவும்.</span>
+                    {% endif %}
                 </div>
             </div>
             {% endfor %}
         </main>
 
-        <aside>
-
+        <aside class="sidebar">
             <div class="card">
-                <div class="card-label">
-                    <span class="label-en">Jobs Summary</span>
-                    <span class="label-ta">வேலைவாய்ப்பு சுருக்கம்</span>
-                </div>
-
+                <div class="card-label"><span class="label-en">Jobs Summary</span><span class="label-ta">வேலைவாய்ப்பு சுருக்கம்</span></div>
                 <div class="stat-grid">
-                    <div class="stat-card">
-                        <div class="stat-value">{{ jobs_count }}</div>
-                        <div class="stat-name">
-                            <span class="label-en">Total active jobs</span>
-                            <span class="label-ta">மொத்த வேலைகள்</span>
-                        </div>
-                    </div>
-
-                    <div class="stat-card">
-                        <div class="stat-value">{{ visible_jobs_count }}</div>
-                        <div class="stat-name">
-                            <span class="label-en">Visible jobs</span>
-                            <span class="label-ta">காண்பிக்கப்படும் வேலைகள்</span>
-                        </div>
-                    </div>
-
-                    <div class="stat-card">
-                        <div class="stat-value">{{ salary_known_count }}</div>
-                        <div class="stat-name">
-                            <span class="label-en">With salary</span>
-                            <span class="label-ta">சம்பளத்துடன்</span>
-                        </div>
-                    </div>
-
-                    <div class="stat-card">
-                        <div class="stat-value">{{ district_counts|length }}</div>
-                        <div class="stat-name">
-                            <span class="label-en">Districts</span>
-                            <span class="label-ta">மாவட்டங்கள்</span>
-                        </div>
-                    </div>
+                    <div class="stat-card"><div class="stat-value">{{ jobs_count }}</div>
+                        <div class="stat-name"><span class="label-en">Total active jobs</span><span class="label-ta">மொத்த வேலைகள்</span></div></div>
+                    <div class="stat-card"><div class="stat-value">{{ visible_jobs_count }}</div>
+                        <div class="stat-name"><span class="label-en">Visible jobs</span><span class="label-ta">காண்பிக்கப்படும் வேலைகள்</span></div></div>
+                    <div class="stat-card"><div class="stat-value">{{ salary_known_count }}</div>
+                        <div class="stat-name"><span class="label-en">With salary</span><span class="label-ta">சம்பளத்துடன்</span></div></div>
+                    <div class="stat-card"><div class="stat-value">{{ district_counts|length }}</div>
+                        <div class="stat-name"><span class="label-en">Districts</span><span class="label-ta">மாவட்டங்கள்</span></div></div>
                 </div>
             </div>
 
             <div class="card">
-                <div class="card-label">
-                    <span class="label-en">Top Districts</span>
-                    <span class="label-ta">முக்கிய மாவட்டங்கள்</span>
-                </div>
-
+                <div class="card-label"><span class="label-en">Top Districts</span><span class="label-ta">முக்கிய மாவட்டங்கள்</span></div>
                 {% for name, count in district_counts %}
-                <div class="list-row">
-                    <span class="list-name">{{ name }}</span>
-                    <span class="list-count">{{ count }}</span>
-                </div>
-                {% empty %}
-                <div class="muted">No district data yet.</div>
-                {% endfor %}
+                <div class="list-row"><span class="list-name">{{ name }}</span><span class="list-count">{{ count }}</span></div>
+                {% empty %}<div class="muted">No district data yet.</div>{% endfor %}
             </div>
 
             <div class="card">
-                <div class="card-label">
-                    <span class="label-en">Top Categories</span>
-                    <span class="label-ta">முக்கிய பிரிவுகள்</span>
-                </div>
-
+                <div class="card-label"><span class="label-en">Top Categories</span><span class="label-ta">முக்கிய பிரிவுகள்</span></div>
                 {% for name, count in category_counts %}
-                <div class="list-row">
-                    <span class="list-name">{{ name }}</span>
-                    <span class="list-count">{{ count }}</span>
-                </div>
-                {% empty %}
-                <div class="muted">No category data yet.</div>
-                {% endfor %}
+                <div class="list-row"><span class="list-name">{{ name }}</span><span class="list-count">{{ count }}</span></div>
+                {% empty %}<div class="muted">No category data yet.</div>{% endfor %}
             </div>
 
             <div class="card">
-                <div class="card-label">
-                    <span class="label-en">Top Companies / Sources</span>
-                    <span class="label-ta">முக்கிய நிறுவனங்கள் / மூலங்கள்</span>
-                </div>
-
+                <div class="card-label"><span class="label-en">Top Companies / Sources</span><span class="label-ta">முக்கிய நிறுவனங்கள் / மூலங்கள்</span></div>
                 {% for name, count in company_counts %}
-                <div class="list-row">
-                    <span class="list-name">{{ name }}</span>
-                    <span class="list-count">{{ count }}</span>
-                </div>
-                {% empty %}
-                <div class="muted">No company data yet.</div>
-                {% endfor %}
+                <div class="list-row"><span class="list-name">{{ name }}</span><span class="list-count">{{ count }}</span></div>
+                {% empty %}<div class="muted">No company data yet.</div>{% endfor %}
             </div>
-
         </aside>
 
     </div>
-</div>
-
-<script>
-    const langButtons = Array.from(document.querySelectorAll(".lang-btn"));
-
-    function setLanguage(lang) {
-        document.body.classList.remove("lang-en", "lang-ta");
-        document.body.classList.add(`lang-${lang}`);
-
-        localStorage.setItem("jobsiq_language", lang);
-
-        langButtons.forEach(button => {
-            if (button.dataset.lang === lang) {
-                button.classList.add("active");
-            } else {
-                button.classList.remove("active");
-            }
-        });
-    }
-
-    langButtons.forEach(button => {
-        button.addEventListener("click", () => {
-            setLanguage(button.dataset.lang);
-        });
-    });
-
-    const savedLanguage = localStorage.getItem("jobsiq_language") || "en";
-    setLanguage(savedLanguage);
-</script>
-
-</body>
-</html>
+{% endblock %}

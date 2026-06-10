@@ -1,0 +1,236 @@
+{% comment %}
+Shared shell for every NewsIQ / JobsIQ page. All CSS lives here once, so the
+four pages stop carrying their own drifting copies. CSS is inlined (not a
+static file) so no STATICFILES config is needed.
+
+Child templates fill these blocks:
+  {% block title %}            -> <title>
+  {% block brand %}            -> brand name (default NewsIQ)
+  {% block subtitle_en/ta %}   -> bilingual sub-brand line
+  {% block topbar_stats %}     -> the mini-stat pills on the right
+  {% block nav_active_* %}     -> put "active" on the current nav item
+  {% block content %}          -> the page body
+  {% block body_extra %}       -> page-specific JS
+{% endcomment %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}தமிழ் NewsIQ{% endblock %}</title>
+    <style>
+        * { box-sizing: border-box; }
+
+        :root {
+            --bg: #07090f; --panel: #0f1624; --panel-2: #0b0f1c;
+            --line: #1a2638; --line-2: #26364f;
+            --text: #b8cce0; --text-bright: #e2edf8; --text-soft: #c4d4e4;
+            --muted: #6f849b; --accent: #e8a820; --green: #22c46a; --red: #ff5555;
+        }
+
+        body {
+            margin: 0; background: var(--bg); color: var(--text);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, "Noto Sans Tamil", sans-serif;
+            font-size: 14px;
+        }
+
+        a { color: inherit; text-decoration: none; }
+
+        a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible {
+            outline: 2px solid var(--accent); outline-offset: 2px;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+        }
+
+        .page { min-height: 100vh; }
+
+        .topbar {
+            background: var(--panel-2); border-bottom: 1px solid var(--line);
+            padding: 14px 22px; position: sticky; top: 0; z-index: 10;
+        }
+        .brand-row { display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+        .brand-left { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+        .brand-tamil { color: var(--accent); font-size: 28px; font-weight: 900; line-height: 1; }
+        .brand-main { color: var(--text-bright); font-size: 22px; font-weight: 900; }
+        .brand-subtitle { color: var(--muted); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; }
+
+        .top-right { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
+
+        .language-switch { display: flex; background: var(--panel); border: 1px solid var(--line); border-radius: 999px; padding: 4px; gap: 4px; }
+        .lang-btn { border: none; background: transparent; color: #8fa8c2; padding: 7px 13px; border-radius: 999px; font-size: 13px; cursor: pointer; font-weight: 800; }
+        .lang-btn.active { background: var(--accent); color: var(--bg); }
+
+        .mini-stat { background: var(--panel); border: 1px solid var(--line); border-radius: 999px; padding: 6px 10px; color: #8fa8c2; font-size: 12px; }
+        .mini-stat strong { color: var(--accent); }
+
+        .nav-row { display: flex; align-items: center; gap: 8px; margin-top: 14px; flex-wrap: wrap; }
+        .nav-link { background: #111b2b; border: 1px solid var(--line-2); color: var(--text); padding: 8px 12px; border-radius: 8px; font-size: 13px; display: inline-block; }
+        .nav-link.active, .nav-link:hover { border-color: var(--accent); color: var(--accent); }
+
+        .container { max-width: 1450px; margin: 0 auto; padding: 22px; }
+
+        .controls { display: flex; gap: 10px; margin-bottom: 18px; flex-wrap: wrap; }
+        .search-input, .select-input {
+            background: var(--panel); color: #d9e6f2; border: 1px solid var(--line);
+            border-radius: 8px; padding: 10px 12px; font-size: 14px; outline: none;
+        }
+        .search-input { min-width: 280px; flex: 1; }
+        .select-input { min-width: 180px; }
+
+        .layout { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 20px; align-items: start; }
+
+        .card { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 16px; margin-bottom: 16px; box-shadow: 0 12px 40px rgba(0,0,0,0.18); }
+        .card:hover { border-color: #2a3a52; }
+
+        .section-title { color: var(--text-bright); font-size: 22px; font-weight: 900; margin: 0 0 14px 0; }
+        .card-label { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.11em; font-weight: 900; margin-bottom: 12px; }
+
+        .article-inner { display: grid; grid-template-columns: 120px minmax(0,1fr); gap: 14px; }
+        .article-thumb { width: 120px; height: 72px; border-radius: 10px; object-fit: cover; background: var(--panel-2); border: 1px solid var(--line); }
+        .article-no-thumb { width: 120px; height: 72px; border-radius: 10px; background: var(--panel-2); border: 1px solid var(--line); display: flex; align-items: center; justify-content: center; color: var(--muted); font-size: 22px; }
+
+        .article-meta { display: flex; gap: 7px; align-items: center; flex-wrap: wrap; margin-bottom: 10px; }
+
+        .pill { display: inline-flex; align-items: center; gap: 4px; padding: 4px 8px; border-radius: 999px; font-size: 11px; line-height: 1; background: #162236; border: 1px solid var(--line-2); color: #9eb7d0; white-space: nowrap; }
+        .pill-source { color: var(--accent); background: rgba(232,168,32,0.09); border-color: rgba(232,168,32,0.35); }
+        .pill-youtube { color: var(--red); background: rgba(255,32,32,0.09); border-color: rgba(255,32,32,0.35); }
+        .pill-job, .pill-topic { color: var(--green); background: rgba(34,196,106,0.09); border-color: rgba(34,196,106,0.3); }
+        .pill-topic { margin-right: 5px; margin-top: 5px; }
+
+        .title-ta, .title-en { color: #dfeafa; font-size: 20px; line-height: 1.55; font-weight: 900; margin-bottom: 8px; word-break: break-word; display: block; }
+        .title-en { font-size: 19px; }
+
+        .summary-block { margin-top: 12px; padding: 12px; background: var(--panel-2); border: 1px solid var(--line); border-radius: 10px; }
+        .summary-label { color: #8fa8c2; font-size: 12px; font-weight: 900; margin-bottom: 6px; }
+        .summary-text { color: var(--text-soft); line-height: 1.7; font-size: 14px; word-break: break-word; }
+
+        .key-stories-grid { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 12px; }
+        .key-story-card { background: var(--panel-2); border: 1px solid var(--line); border-radius: 12px; padding: 13px; min-height: 150px; display: block; }
+        .key-story-card:hover { border-color: var(--accent); }
+        .key-story-title { color: #dfeafa; font-size: 14px; font-weight: 900; line-height: 1.55; margin-top: 8px; }
+
+        .signals { display: flex; flex-wrap: wrap; gap: 12px; color: #8fa8c2; font-size: 13px; margin-top: 12px; }
+        .signals strong { color: #dfeafa; }
+
+        .sidebar { position: sticky; top: 122px; }
+        .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .stat-card { background: var(--panel-2); border: 1px solid var(--line); border-radius: 12px; padding: 12px; }
+        .stat-value { color: var(--accent); font-size: 26px; font-weight: 900; line-height: 1; }
+        .stat-name { color: var(--muted); font-size: 12px; margin-top: 6px; }
+
+        .list-row { display: flex; justify-content: space-between; gap: 12px; padding: 9px 0; border-bottom: 1px solid var(--line); font-size: 13px; }
+        .list-row:last-child { border-bottom: none; }
+        .list-name { color: var(--text-soft); overflow-wrap: anywhere; }
+        .list-count { color: var(--accent); font-weight: 900; white-space: nowrap; }
+
+        .muted { color: var(--muted); line-height: 1.6; }
+        .hidden { display: none !important; }
+
+        .lang-block { display: none; }
+        body.lang-en .lang-en { display: block; }
+        body.lang-ta .lang-ta { display: block; }
+        body.lang-ta .label-en { display: none; }
+        body.lang-en .label-ta { display: none; }
+
+        @media (max-width: 1200px) { .key-stories-grid { grid-template-columns: repeat(2, minmax(0,1fr)); } }
+        @media (max-width: 1000px) {
+            .layout { grid-template-columns: 1fr; }
+            .sidebar { position: static; }
+            .search-input { min-width: 100%; }
+        }
+        @media (max-width: 700px) {
+            .article-inner { grid-template-columns: 1fr; }
+            .article-thumb, .article-no-thumb { width: 100%; height: 170px; }
+            .key-stories-grid { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 600px) {
+            .container, .topbar { padding: 14px; }
+            .title-ta, .title-en { font-size: 17px; }
+            .brand-main { font-size: 19px; }
+        }
+
+        {% block extra_css %}{% endblock %}
+    </style>
+</head>
+
+<body class="lang-ta">
+<div class="page">
+
+    <header class="topbar">
+        <div class="brand-row">
+            <div class="brand-left">
+                <div class="brand-tamil">தமிழ்</div>
+                <div class="brand-main">{% block brand %}NewsIQ{% endblock %}</div>
+                <div class="brand-subtitle">
+                    <span class="label-en">{% block subtitle_en %}Tamil Nadu News, Jobs &amp; Public Intelligence{% endblock %}</span>
+                    <span class="label-ta">{% block subtitle_ta %}தமிழ்நாடு செய்திகள், வேலைவாய்ப்பு, நுண்ணறிவு{% endblock %}</span>
+                </div>
+            </div>
+
+            <div class="top-right">
+                <div class="language-switch" role="group" aria-label="Language">
+                    <button type="button" class="lang-btn" data-lang="ta">தமிழ்</button>
+                    <button type="button" class="lang-btn" data-lang="en">English</button>
+                </div>
+                {% block topbar_stats %}{% endblock %}
+            </div>
+        </div>
+
+        <nav class="nav-row" aria-label="Primary">
+            <a class="nav-link {% block nav_active_feed %}{% endblock %}" href="/">
+                <span class="label-en">📰 Feed</span><span class="label-ta">📰 செய்திகள்</span>
+            </a>
+            <a class="nav-link {% block nav_active_jobs %}{% endblock %}" href="/jobs/">
+                <span class="label-en">💼 Jobs</span><span class="label-ta">💼 வேலைவாய்ப்பு</span>
+            </a>
+            <a class="nav-link {% block nav_active_reports %}{% endblock %}" href="/reports/">
+                <span class="label-en">Reports</span><span class="label-ta">அறிக்கைகள்</span>
+            </a>
+            <a class="nav-link {% block nav_active_alerts %}{% endblock %}" href="/alerts/">
+                <span class="label-en">Alerts</span><span class="label-ta">எச்சரிக்கைகள்</span>
+            </a>
+            {% if user.is_staff %}
+            <a class="nav-link" href="/admin/" target="_blank" rel="noopener">
+                <span class="label-en">Admin</span><span class="label-ta">நிர்வாகம்</span>
+            </a>
+            {% endif %}
+        </nav>
+    </header>
+
+    <div class="container">
+        {% block content %}{% endblock %}
+    </div>
+</div>
+
+<script>
+    // Language toggle, shared by every page. Default Tamil.
+    (function () {
+        const langButtons = Array.from(document.querySelectorAll(".lang-btn"));
+
+        function setLanguage(lang) {
+            document.body.classList.remove("lang-en", "lang-ta");
+            document.body.classList.add("lang-" + lang);
+            try { localStorage.setItem("newsiq_language", lang); } catch (e) {}
+            langButtons.forEach(b => b.classList.toggle("active", b.dataset.lang === lang));
+
+            const search = document.getElementById("searchBox");
+            if (search) {
+                search.placeholder = lang === "ta"
+                    ? "தமிழ்/ஆங்கில செய்திகள், வேலைவாய்ப்பு, தலைப்புகளைத் தேடவும்..."
+                    : "Search news, jobs, Tamil titles, English summaries, topics...";
+            }
+        }
+
+        langButtons.forEach(b => b.addEventListener("click", () => setLanguage(b.dataset.lang)));
+
+        let saved = "ta";
+        try { saved = localStorage.getItem("newsiq_language") || "ta"; } catch (e) {}
+        setLanguage(saved);
+    })();
+</script>
+
+{% block body_extra %}{% endblock %}
+</body>
+</html>

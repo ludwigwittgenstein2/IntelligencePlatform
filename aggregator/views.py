@@ -369,9 +369,13 @@ def _auto_sync_jobs_if_needed(force=False):
     cache.set(lock_key, True, timeout=10 * 60)
 
     try:
+        # Pass the option in its CLI string form ("--limit-per-source") so it
+        # always matches the command's actual signature regardless of how the
+        # argument's dest is configured. Passing limit_per_source=50 as a kwarg
+        # can fail with "unrecognized arguments" on some argparse setups.
         call_command(
             "sync_public_jobs",
-            limit_per_source=50,
+            "--limit-per-source", "50",
             verbosity=0,
         )
 

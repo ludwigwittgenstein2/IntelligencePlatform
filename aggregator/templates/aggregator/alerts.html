@@ -1,450 +1,233 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>NewsIQ Alerts & Notifications</title>
+{% extends "aggregator/base.html" %}
 
-    <style>
-        * { box-sizing: border-box; }
+{% block title %}தமிழ் NewsIQ — Alerts{% endblock %}
+{% block subtitle_en %}Alerts &amp; Notifications{% endblock %}
+{% block subtitle_ta %}எச்சரிக்கைகள் & அறிவிப்புகள்{% endblock %}
+{% block nav_active_alerts %}active{% endblock %}
 
-        body {
-            margin: 0;
-            background: #07090f;
-            color: #b8cce0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, "Noto Sans Tamil", sans-serif;
-            font-size: 14px;
-        }
+{% block topbar_stats %}
+    <div class="mini-stat"><strong>{{ unread_count }}</strong>
+        <span class="label-en">new alerts</span><span class="label-ta">புதிய எச்சரிக்கைகள்</span></div>
+{% endblock %}
 
-        a { color: inherit; text-decoration: none; }
+{% block extra_css %}
+    .layout-alerts { display: grid; grid-template-columns: 420px minmax(0, 1fr); gap: 20px; align-items: start; }
 
-        .topbar {
-            background: #0b0f1c;
-            border-bottom: 1px solid #1a2638;
-            padding: 14px 22px;
-            position: sticky;
-            top: 0;
-            z-index: 10;
-        }
+    .form-grid { display: grid; gap: 10px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 
-        .brand-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
+    label { color: #8fa8c2; display: grid; gap: 6px; font-size: 12px; font-weight: 800; }
+    .form-grid input, .form-grid select {
+        background: var(--panel-2); color: #d9e6f2; border: 1px solid var(--line);
+        border-radius: 8px; padding: 10px 12px; font-size: 14px; outline: none; width: 100%;
+    }
+    .form-grid input:focus, .form-grid select:focus { border-color: var(--accent); }
 
-        .brand-left {
-            display: flex;
-            align-items: baseline;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
+    .button { background: var(--accent); color: var(--bg); border: none; border-radius: 8px; padding: 11px 13px; font-weight: 900; cursor: pointer; width: 100%; }
 
-        .brand-tamil {
-            color: #e8a820;
-            font-size: 28px;
-            font-weight: 900;
-            line-height: 1;
-        }
+    .rule-card, .event-card { background: var(--panel-2); border: 1px solid var(--line); border-radius: 12px; padding: 13px; margin-bottom: 12px; display: block; }
+    .rule-title, .event-title { color: var(--text-bright); font-size: 17px; font-weight: 900; line-height: 1.4; margin-bottom: 8px; }
 
-        .brand-main {
-            color: #e2edf8;
-            font-size: 22px;
-            font-weight: 900;
-        }
+    .meta-row { display: flex; gap: 7px; align-items: center; flex-wrap: wrap; margin-bottom: 10px; }
+    .pill-hot { color: var(--accent); background: rgba(232,168,32,0.09); border-color: rgba(232,168,32,0.35); }
+    .pill-new { color: var(--green); background: rgba(34,196,106,0.09); border-color: rgba(34,196,106,0.3); }
+    .pill-unverified { color: var(--red); background: rgba(255,85,85,0.09); border-color: rgba(255,85,85,0.35); }
 
-        .brand-subtitle {
-            color: #6f849b;
-            font-size: 12px;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-        }
+    .snippet { color: var(--text-soft); line-height: 1.65; margin: 8px 0 12px; }
 
-        .mini-stat {
-            background: #0f1624;
-            border: 1px solid #1a2638;
-            border-radius: 999px;
-            padding: 6px 10px;
-            color: #8fa8c2;
-            font-size: 12px;
-        }
+    .api-box {
+        background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 10px;
+        color: var(--accent); font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        font-size: 12px; overflow-wrap: anywhere;
+    }
 
-        .mini-stat strong { color: #e8a820; }
+    .help-text { color: var(--muted); font-size: 11px; font-weight: 600; }
 
-        .nav-row {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-top: 14px;
-            flex-wrap: wrap;
-        }
+    @media (max-width: 1000px) {
+        .layout-alerts, .form-row { grid-template-columns: 1fr; }
+    }
+{% endblock %}
 
-        .nav-link {
-            background: #111b2b;
-            border: 1px solid #26364f;
-            color: #b8cce0;
-            padding: 8px 12px;
-            border-radius: 8px;
-            font-size: 13px;
-            display: inline-block;
-        }
+{% block content %}
 
-        .nav-link.active,
-        .nav-link:hover {
-            border-color: #e8a820;
-            color: #e8a820;
-        }
+    <h1 class="section-title">
+        <span class="label-en">Alerts &amp; Notifications</span>
+        <span class="label-ta">எச்சரிக்கைகள் & அறிவிப்புகள்</span>
+    </h1>
 
-        .container {
-            max-width: 1450px;
-            margin: 0 auto;
-            padding: 22px;
-        }
+    <p class="muted" style="margin: 0 0 18px 0;">
+        <span class="label-en">Track people, parties, districts, jobs, topics, or custom keywords.
+            Email/WhatsApp delivery starts only after the contact is verified.</span>
+        <span class="label-ta">நபர்கள், கட்சிகள், மாவட்டங்கள், வேலைவாய்ப்பு, தலைப்புகள் அல்லது keywords-ஐ கண்காணிக்கவும்.
+            மின்னஞ்சல்/WhatsApp அறிவிப்பு, தொடர்பு சரிபார்க்கப்பட்ட பிறகே தொடங்கும்.</span>
+    </p>
 
-        .section-title {
-            color: #e2edf8;
-            font-size: 26px;
-            font-weight: 900;
-            margin: 0 0 8px 0;
-        }
-
-        .subtitle {
-            color: #8fa8c2;
-            line-height: 1.6;
-            margin: 0 0 18px 0;
-        }
-
-        .layout {
-            display: grid;
-            grid-template-columns: 420px minmax(0, 1fr);
-            gap: 20px;
-            align-items: start;
-        }
-
-        .card {
-            background: #0f1624;
-            border: 1px solid #1a2638;
-            border-radius: 14px;
-            padding: 16px;
-            margin-bottom: 16px;
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.18);
-        }
-
-        .card-label {
-            color: #6f849b;
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 0.11em;
-            font-weight: 900;
-            margin-bottom: 12px;
-        }
-
-        .form-grid {
-            display: grid;
-            gap: 10px;
-        }
-
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-        }
-
-        label {
-            color: #8fa8c2;
-            display: grid;
-            gap: 6px;
-            font-size: 12px;
-            font-weight: 800;
-        }
-
-        input,
-        select {
-            background: #0b0f1c;
-            color: #d9e6f2;
-            border: 1px solid #1a2638;
-            border-radius: 8px;
-            padding: 10px 12px;
-            font-size: 14px;
-            outline: none;
-            width: 100%;
-        }
-
-        input:focus,
-        select:focus {
-            border-color: #e8a820;
-        }
-
-        .button {
-            background: #e8a820;
-            color: #07090f;
-            border: none;
-            border-radius: 8px;
-            padding: 11px 13px;
-            font-weight: 900;
-            cursor: pointer;
-            width: 100%;
-        }
-
-        .rule-card,
-        .event-card {
-            background: #0b0f1c;
-            border: 1px solid #1a2638;
-            border-radius: 12px;
-            padding: 13px;
-            margin-bottom: 12px;
-        }
-
-        .rule-title,
-        .event-title {
-            color: #e2edf8;
-            font-size: 17px;
-            font-weight: 900;
-            line-height: 1.4;
-            margin-bottom: 8px;
-        }
-
-        .meta-row {
-            display: flex;
-            gap: 7px;
-            align-items: center;
-            flex-wrap: wrap;
-            margin-bottom: 10px;
-        }
-
-        .pill {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            padding: 4px 8px;
-            border-radius: 999px;
-            font-size: 11px;
-            line-height: 1;
-            background: #162236;
-            border: 1px solid #26364f;
-            color: #9eb7d0;
-            white-space: nowrap;
-        }
-
-        .pill-hot {
-            color: #e8a820;
-            background: rgba(232, 168, 32, 0.09);
-            border-color: rgba(232, 168, 32, 0.35);
-        }
-
-        .pill-new {
-            color: #22c46a;
-            background: rgba(34, 196, 106, 0.09);
-            border-color: rgba(34, 196, 106, 0.3);
-        }
-
-        .snippet {
-            color: #c4d4e4;
-            line-height: 1.65;
-            margin: 8px 0 12px;
-        }
-
-        .muted {
-            color: #6f849b;
-            line-height: 1.6;
-        }
-
-        .api-box {
-            background: #07090f;
-            border: 1px solid #1a2638;
-            border-radius: 10px;
-            padding: 10px;
-            color: #e8a820;
-            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-            font-size: 12px;
-            overflow-wrap: anywhere;
-        }
-
-        @media (max-width: 1000px) {
-            .layout,
-            .form-row {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
-</head>
-
-<body>
-<div class="page">
-    <header class="topbar">
-        <div class="brand-row">
-            <div class="brand-left">
-                <div class="brand-tamil">தமிழ்</div>
-                <div class="brand-main">NewsIQ</div>
-                <div class="brand-subtitle">Alerts & Notifications</div>
-            </div>
-
-            <div class="mini-stat">
-                <strong>{{ unread_count }}</strong> new alerts
-            </div>
-        </div>
-
-        <nav class="nav-row">
-            <a class="nav-link" href="/">Feed</a>
-            <a class="nav-link" href="/jobs/">Jobs</a>
-            <a class="nav-link" href="/reports/">Reports</a>
-            <a class="nav-link active" href="/alerts/">Alerts</a>
-            <a class="nav-link" href="/admin/" target="_blank">Admin</a>
-        </nav>
-    </header>
-
-    <main class="container">
-        <h1 class="section-title">Alerts & Notifications</h1>
-        <p class="subtitle">
-            Track people, parties, districts, jobs, topics, or custom keywords. Run
-            <code>python manage.py run_alerts</code> after the pipeline to create notifications.
-        </p>
-
-        <div class="layout">
-            <aside>
-                <section class="card">
-                    <div class="card-label">Create Alert Rule</div>
-
-                    <form method="post" class="form-grid">
-                        {% csrf_token %}
-
-                        <label>
-                            Rule name
-                            <input name="name" placeholder="TVK election watch" required>
-                        </label>
-
-                        <label>
-                            Keywords
-                            <input name="keywords" placeholder="TVK, Vijay, election" required>
-                        </label>
-
-                        <div class="form-row">
-                            <label>
-                                Match
-                                <select name="match_mode">
-                                    {% for value, label in match_mode_choices %}
-                                        <option value="{{ value }}">{{ label }}</option>
-                                    {% endfor %}
-                                </select>
-                            </label>
-
-                            <label>
-                                Channel
-                                <select name="notification_channel">
-                                    {% for value, label in notification_channel_choices %}
-                                        <option value="{{ value }}">{{ label }}</option>
-                                    {% endfor %}
-                                </select>
-                            </label>
-                        </div>
-
-                        <div class="form-row">
-                            <label>
-                                Source type
-                                <select name="source_type">
-                                    <option value="">Any</option>
-                                    {% for value, label in source_type_choices %}
-                                        <option value="{{ value }}">{{ label }}</option>
-                                    {% endfor %}
-                                </select>
-                            </label>
-
-                            <label>
-                                Primary topic
-                                <select name="primary_topic">
-                                    <option value="">Any</option>
-                                    {% for value, label in news_topic_choices %}
-                                        <option value="{{ value }}">{{ label }}</option>
-                                    {% endfor %}
-                                </select>
-                            </label>
-                        </div>
-
-                        <div class="form-row">
-                            <label>
-                                Minimum relevance
-                                <input name="minimum_relevance" type="number" min="0" max="1" step="0.05" value="0">
-                            </label>
-
-                            <label>
-                                Email
-                                <input name="email" type="email" placeholder="optional@email.com">
-                            </label>
-                        </div>
-
-                        <button class="button" type="submit">Create Alert</button>
-                    </form>
-                </section>
-
-                <section class="card">
-                    <div class="card-label">Active Rules</div>
-
-                    {% for rule in rules %}
-                        <div class="rule-card">
-                            <div class="rule-title">{{ rule.name }}</div>
-                            <div class="meta-row">
-                                <span class="pill pill-hot">{{ rule.keywords }}</span>
-                                <span class="pill">{{ rule.get_match_mode_display }}</span>
-                                <span class="pill">{{ rule.get_notification_channel_display }}</span>
-                            </div>
-                            <div class="muted">
-                                {{ rule.events.count }} matches
-                                {% if rule.last_checked_at %}
-                                    · checked {{ rule.last_checked_at|timesince }} ago
-                                {% endif %}
-                            </div>
-                        </div>
-                    {% empty %}
-                        <div class="muted">No alert rules yet.</div>
-                    {% endfor %}
-                </section>
-
-                <section class="card">
-                    <div class="card-label">API</div>
-                    <div class="api-box">/api/alerts/?limit=50</div>
-                </section>
-            </aside>
-
-            <section>
-                <div class="card">
-                    <div class="card-label">Recent Notifications</div>
-
-                    {% for event in events %}
-                        <a class="event-card" href="{{ event.content_item.url }}" target="_blank">
-                            <div class="meta-row">
-                                <span class="pill pill-new">{{ event.get_status_display }}</span>
-                                <span class="pill">{{ event.rule.name }}</span>
-                                <span class="pill">{{ event.content_item.source.name }}</span>
-                                <span class="pill">{{ event.matched_at|timesince }} ago</span>
-                            </div>
-
-                            <div class="event-title">
-                                {% if event.content_item.title_en %}
-                                    {{ event.content_item.title_en }}
-                                {% else %}
-                                    {{ event.content_item.title_ta }}
-                                {% endif %}
-                            </div>
-
-                            <div class="snippet">{{ event.snippet }}</div>
-
-                            <div class="meta-row">
-                                {% for keyword in event.matched_keywords %}
-                                    <span class="pill pill-hot">{{ keyword }}</span>
-                                {% endfor %}
-                            </div>
-                        </a>
-                    {% empty %}
-                        <div class="muted">
-                            No notifications yet. Create a rule, then run
-                            <code>python manage.py run_alerts</code>.
-                        </div>
-                    {% endfor %}
+    <div class="layout-alerts">
+        <aside>
+            <section class="card">
+                <div class="card-label">
+                    <span class="label-en">Create Alert Rule</span><span class="label-ta">எச்சரிக்கை விதியை உருவாக்கு</span>
                 </div>
+
+                <form method="post" class="form-grid">
+                    {% csrf_token %}
+
+                    <label>
+                        <span class="label-en">Rule name</span><span class="label-ta">விதி பெயர்</span>
+                        <input name="name" placeholder="TVK election watch" required>
+                    </label>
+
+                    <label>
+                        <span class="label-en">Keywords</span><span class="label-ta">முக்கிய சொற்கள்</span>
+                        <input name="keywords" placeholder="TVK, Vijay, election" required>
+                    </label>
+
+                    <div class="form-row">
+                        <label>
+                            <span class="label-en">Match</span><span class="label-ta">பொருத்தம்</span>
+                            <select name="match_mode">
+                                {% for value, label in match_mode_choices %}
+                                    <option value="{{ value }}">{{ label }}</option>
+                                {% endfor %}
+                            </select>
+                        </label>
+
+                        <label>
+                            <span class="label-en">Channel</span><span class="label-ta">வழி</span>
+                            <select name="notification_channel">
+                                {% for value, label in notification_channel_choices %}
+                                    <option value="{{ value }}">{{ label }}</option>
+                                {% endfor %}
+                            </select>
+                        </label>
+                    </div>
+
+                    <div class="form-row">
+                        <label>
+                            <span class="label-en">Source type</span><span class="label-ta">மூல வகை</span>
+                            <select name="source_type">
+                                <option value="">
+                                    <span class="label-en">Any</span>
+                                </option>
+                                {% for value, label in source_type_choices %}
+                                    <option value="{{ value }}">{{ label }}</option>
+                                {% endfor %}
+                            </select>
+                        </label>
+
+                        <label>
+                            <span class="label-en">Primary topic</span><span class="label-ta">முதன்மை தலைப்பு</span>
+                            <select name="primary_topic">
+                                <option value="">Any</option>
+                                {% for value, label in news_topic_choices %}
+                                    <option value="{{ value }}">{{ label }}</option>
+                                {% endfor %}
+                            </select>
+                        </label>
+                    </div>
+
+                    <div class="form-row">
+                        <label>
+                            <span class="label-en">Minimum relevance</span><span class="label-ta">குறைந்தபட்ச தொடர்பு</span>
+                            <input name="minimum_relevance" type="number" min="0" max="1" step="0.05" value="0">
+                        </label>
+
+                        <label>
+                            <span class="label-en">Email</span><span class="label-ta">மின்னஞ்சல்</span>
+                            <input name="email" type="email" placeholder="optional@email.com">
+                        </label>
+                    </div>
+
+                    <label>
+                        <span class="label-en">WhatsApp number</span><span class="label-ta">WhatsApp எண்</span>
+                        <input name="phone" type="tel" placeholder="+91XXXXXXXXXX">
+                        <span class="help-text">
+                            <span class="label-en">E.164 format. Used only if channel is WhatsApp. Verified before any message is sent.</span>
+                            <span class="label-ta">E.164 வடிவம். WhatsApp வழியெனில் மட்டும். அனுப்பும் முன் சரிபார்க்கப்படும்.</span>
+                        </span>
+                    </label>
+
+                    <button class="button" type="submit">
+                        <span class="label-en">Create Alert</span><span class="label-ta">எச்சரிக்கையை உருவாக்கு</span>
+                    </button>
+                </form>
             </section>
-        </div>
-    </main>
-</div>
-</body>
-</html>
+
+            <section class="card">
+                <div class="card-label">
+                    <span class="label-en">Active Rules</span><span class="label-ta">செயலில் உள்ள விதிகள்</span>
+                </div>
+
+                {% for rule in rules %}
+                    <div class="rule-card">
+                        <div class="rule-title">{{ rule.name }}</div>
+                        <div class="meta-row">
+                            <span class="pill pill-hot">{{ rule.keywords }}</span>
+                            <span class="pill">{{ rule.get_match_mode_display }}</span>
+                            <span class="pill">{{ rule.get_notification_channel_display }}</span>
+                            {% if rule.notification_channel != "in_app" %}
+                                {% if rule.is_verified %}
+                                    <span class="pill pill-new">✓ <span class="label-en">Verified</span><span class="label-ta">சரிபார்க்கப்பட்டது</span></span>
+                                {% else %}
+                                    <span class="pill pill-unverified">⚠ <span class="label-en">Unverified</span><span class="label-ta">சரிபார்க்கப்படவில்லை</span></span>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                        <div class="muted">
+                            {{ rule.events.count }}
+                            <span class="label-en">matches</span><span class="label-ta">பொருத்தங்கள்</span>
+                            {% if rule.last_checked_at %} · checked {{ rule.last_checked_at|timesince }} ago{% endif %}
+                        </div>
+                    </div>
+                {% empty %}
+                    <div class="muted">
+                        <span class="label-en">No alert rules yet.</span><span class="label-ta">இன்னும் எச்சரிக்கை விதிகள் இல்லை.</span>
+                    </div>
+                {% endfor %}
+            </section>
+
+            <section class="card">
+                <div class="card-label">API</div>
+                <div class="api-box">/api/alerts/?limit=50</div>
+            </section>
+        </aside>
+
+        <section>
+            <div class="card">
+                <div class="card-label">
+                    <span class="label-en">Recent Notifications</span><span class="label-ta">சமீபத்திய அறிவிப்புகள்</span>
+                </div>
+
+                {% for event in events %}
+                    <a class="event-card" href="{{ event.content_item.url }}" target="_blank" rel="noopener">
+                        <div class="meta-row">
+                            <span class="pill pill-new">{{ event.get_status_display }}</span>
+                            <span class="pill">{{ event.rule.name }}</span>
+                            <span class="pill">{{ event.content_item.source.name }}</span>
+                            <span class="pill">{{ event.matched_at|timesince }} ago</span>
+                        </div>
+
+                        <div class="event-title">
+                            {% if event.content_item.title_en %}{{ event.content_item.title_en }}{% else %}{{ event.content_item.title_ta }}{% endif %}
+                        </div>
+
+                        <div class="snippet">{{ event.snippet }}</div>
+
+                        <div class="meta-row">
+                            {% for keyword in event.matched_keywords %}
+                                <span class="pill pill-hot">{{ keyword }}</span>
+                            {% endfor %}
+                        </div>
+                    </a>
+                {% empty %}
+                    <div class="muted">
+                        <span class="label-en">No notifications yet. Create a rule, then run
+                            <code>python manage.py run_alerts</code>.</span>
+                        <span class="label-ta">இன்னும் அறிவிப்புகள் இல்லை. ஒரு விதியை உருவாக்கி,
+                            <code>python manage.py run_alerts</code> இயக்கவும்.</span>
+                    </div>
+                {% endfor %}
+            </div>
+        </section>
+    </div>
+{% endblock %}
